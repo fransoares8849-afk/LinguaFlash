@@ -2068,8 +2068,34 @@ function processShadow2(stream,target){
   rec.onresult=e=>{
     const best=e.results[0][0].transcript.toLowerCase().trim();
     const score=calcSimilarity(best,target.toLowerCase());
+    showShadow2Result(audioUrl,'result',best,score);
+  };
+  rec.onerror=()=>showShadow2Result(audioUrl,'erro');
+  rec.onnomatch=()=>showShadow2Result(audioUrl,'nomatch');
+  rec.onend=()=>{
+    // If still showing "analisando" after recognition ends, show audio fallback
+    const btn2=document.getElementById('shadowMicBtn2');
+    if(btn2&&btn2.textContent.includes('Analisando')) showShadow2Result(audioUrl,'nomatch');
+  };
+  rec.start();
+  // Safety timeout — if nothing happens in 6s, show fallback
+  setTimeout(()=>{
+    try{rec.stop();}catch(e){}
+    const btn2=document.getElementById('shadowMicBtn2');
+    if(btn2&&btn2.textContent.includes('Analisando')) showShadow2Result(audioUrl,'nomatch');
+  },6000);
+}
+
+function showShadow2Result(audioUrl, type, best, score){
+  const fb=document.getElementById('shadowFeedback2');
+  const btn=document.getElementById('shadowMicBtn2');
+  if(!fb) return;
+  document.getElementById('ss2').className='shadow-step done';
+  document.getElementById('ss3').className='shadow-step done';
+  btn.disabled=false; btn.textContent='🎤 Repetir';
+
+  if(type==='result'){
     const scoreColor=score>=80?'var(--green)':score>=55?'var(--orange)':'var(--red)';
-    const fb=document.getElementById('shadowFeedback2');
     fb.className=`shadow-feedback show ${score>=55?'ok':'bad'}`;
     fb.innerHTML=`
       <div style="font-weight:800;font-size:14px;margin-bottom:6px">${score>=55?'✅ Ótimo trabalho!':'🔁 Continue praticando!'}</div>
@@ -2079,25 +2105,19 @@ function processShadow2(stream,target){
       </div>
       <div style="font-size:11px;color:${scoreColor};font-weight:700;margin-bottom:8px">${score}% de similaridade</div>
       <div style="font-size:12px;font-weight:800;margin-bottom:4px">🎧 Ouça sua gravação:</div>
-      <audio controls src="${audioUrl}" style="width:100%;border-radius:8px;margin-bottom:4px"></audio>
-      <div style="font-size:11px;color:var(--gray-600)">Compare com o modelo — foco em ritmo e entonação!</div>`;
-    document.getElementById('ss2').className='shadow-step done';
-    document.getElementById('ss3').className='shadow-step done';
+      <audio controls src="${audioUrl}" style="width:100%;border-radius:8px"></audio>`;
     SFX[score>=60?'correct':'click']();
-    btn.disabled=false;btn.textContent='🎤 Repetir';
-  };
-  rec.onerror=()=>{
-    const fb=document.getElementById('shadowFeedback2');
+  } else {
+    // Fallback: just show audio player
     fb.className='shadow-feedback show ok';
     fb.innerHTML=`
-      <div style="font-weight:800;margin-bottom:6px">🎧 Ouça sua gravação e compare:</div>
-      <audio controls src="${audioUrl}" style="width:100%;border-radius:8px;margin-bottom:6px"></audio>
-      <div style="font-size:12px;color:var(--gray-600)">Toque em 🔊 Ouvir para ouvir o modelo novamente.</div>`;
-    document.getElementById('ss2').className='shadow-step done';
-    document.getElementById('ss3').className='shadow-step done';
-    btn.disabled=false;btn.textContent='🎤 Repetir';
-  };
-  rec.start();setTimeout(()=>{try{rec.stop();}catch(e){}},5000);
+      <div style="font-weight:800;margin-bottom:6px">🎧 Ouça sua gravação e compare com o modelo:</div>
+      <audio controls src="${audioUrl}" style="width:100%;border-radius:8px;margin-bottom:8px"></audio>
+      <div style="display:flex;gap:8px;margin-top:4px">
+        <button onclick="shadowSelfRate(true)" style="flex:1;background:var(--green-light);border:2px solid var(--green);border-radius:10px;padding:9px;font-family:'Nunito',sans-serif;font-weight:800;cursor:pointer;color:var(--green-dark);font-size:13px">😄 Ficou bom!</button>
+        <button onclick="shadowSelfRate(false)" style="flex:1;background:var(--red-light);border:2px solid var(--red);border-radius:10px;padding:9px;font-family:'Nunito',sans-serif;font-weight:800;cursor:pointer;color:var(--red);font-size:13px">🔁 Preciso melhorar</button>
+      </div>`;
+  }
 }
 
 // PRONUNCIATION
