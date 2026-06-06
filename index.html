@@ -905,7 +905,7 @@ const lessons = [
           {who:'📞',en:"I'm afraid he is in a meeting. Can I take a message?",pt:'Receio que ele está em reunião. Posso anotar um recado?'},
           {who:'👨',en:'Yes, please tell him that David called and ask him to call me back.',pt:'Sim, diga a ele que David ligou e peça que me retorne.'}],
    question:'Por que o Sr. Johnson não atende?',answer:'He is in a meeting.',options:['He is out of office.','He is in a meeting.','He is on vacation.','He is on another call.']},
-  {mode:'match',typeLabel:'Expressões ao telefone',skill:'vocab',pairs:[['hold on','aguarde',''],['call back','retornar ligação'],['leave a message','deixar recado'],['wrong number','número errado']]},
+  {mode:'match',typeLabel:'Expressões ao telefone',skill:'vocab',pairs:[['hold on','aguarde'],['call back','retornar ligação'],['leave a message','deixar recado'],['wrong number','número errado']]},
   {mode:'mcq',typeLabel:'Como se diz?',skill:'vocab',prompt:'Um momento, por favor.',answer:'Hold on, please.',options:['Hang up, please.','Hold on, please.','Call me back.','Wrong number.']},
   {mode:'build',typeLabel:'Monte a frase',skill:'grammar',promptPT:'Posso falar com a Maria?',words:['Could','I','speak','to','Maria','please','?'],answer:'Could I speak to Maria please ?'},
   {mode:'fill',typeLabel:'Complete a frase',skill:'vocab',promptPre:'I am calling to',blank:'confirm',promptPost:'my appointment for tomorrow.',answer:'confirm',hint:'Estou ligando para ___ minha consulta de amanhã.'},
@@ -948,9 +948,11 @@ const lessons = [
    question:'O que o homem sugere?',answer:'A 20-minute walk.',options:['Yoga classes.','A 20-minute walk.','Swimming.','Going to the gym.']},
   {mode:'shadowing',typeLabel:'Shadowing',skill:'speaking',phrase:'I have been trying to eat healthier and exercise three times a week.',translation:'Tenho tentado comer mais saudável e me exercitar três vezes por semana.'},
   {mode:'reorder',typeLabel:'Ordene as palavras',skill:'grammar',sentence:'You should drink at least eight glasses of water a day.',words:['day.','You','eight','should','a','glasses','drink','least','water','at','of']}
- ]}
-];
+ ]},
 
+ // ══════════════════════════════════════════
+ //  BLOCO 3 — Gramática Avançada + Situações
+ // ══════════════════════════════════════════
  {id:20,name:"Condicional 1",icon:"🔀",skills:{vocab:2,grammar:4,listening:1,speaking:1},questions:[
   {mode:'story',typeLabel:'Leia a mini-história',skill:'listening',
    text:'If it [rains|rains] tomorrow, we will stay home. If the sun [shines|shines], we will go to the beach. If we have time, we will [invite|invite] our friends. If they [come|come], we will have a barbecue.',
@@ -1121,6 +1123,7 @@ const lessons = [
   {mode:'shadowing',typeLabel:'Shadowing',skill:'speaking',phrase:"I see your point. However, from my perspective, we should consider other options first.",translation:'Entendo seu ponto. Porém, do meu ponto de vista, deveríamos considerar outras opções primeiro.'},
   {mode:'reorder',typeLabel:'Ordene as palavras',skill:'grammar',sentence:'In my opinion this approach is more efficient.',words:['efficient.','In','approach','opinion','more','my','is','this']}
  ]}
+];
 
 // Shadowing phrases bank
 const shadowingPhrases = [
