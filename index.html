@@ -367,7 +367,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
 .note-toggle-btn{background:none;border:2px solid var(--border);border-radius:10px;padding:6px 12px;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;color:var(--gray-600);cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s;white-space:nowrap}
 .note-toggle-btn:hover{border-color:var(--yellow);color:#B45309;background:#FFFBEB}
 .note-toggle-btn.has-note{border-color:#F59E0B;color:#B45309;background:#FFFBEB}
-.note-panel{background:#FFFBEB;border:2px solid #FDE68A;border-radius:14px;padding:14px;display:none;flex-direction:column;gap:10px;animation:slideUp .2s ease}
+.note-panel{background:#FFFBEB;border:2px solid #FDE68A;backdrop-filter:blur(8px);border-radius:14px;padding:14px;display:none;flex-direction:column;gap:10px;animation:slideUp .2s ease}
 .note-panel.open{display:flex}
 .note-panel-header{display:flex;align-items:center;justify-content:space-between}
 .note-panel-title{font-size:13px;font-weight:800;color:#92400E;display:flex;align-items:center;gap:6px}
@@ -621,6 +621,113 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
 .result-new-badge{background:rgba(255,255,255,.25);border:2px solid rgba(255,255,255,.5);border-radius:30px;padding:6px 14px;font-size:13px;font-weight:800;color:#FFF;display:flex;align-items:center;gap:6px;animation:pop .4s cubic-bezier(.34,1.56,.64,1)}
 .result-review-btn{width:100%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.4);border-radius:14px;padding:12px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:800;color:#FFF;cursor:pointer;display:none;align-items:center;justify-content:center;gap:8px}
 .result-review-btn.show{display:flex}
+
+/* ── DUOLINGO-LIKE IMPROVEMENTS ── */
+
+/* Smoother screen transitions */
+.screen.active { animation: screenIn .25s ease; }
+@keyframes screenIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+
+/* Better conversation bubbles */
+.conv-msg.app .conv-bubble {
+  background: var(--gray-100);
+  border-radius: 4px 18px 18px 18px;
+  border-left: 3px solid var(--purple);
+  font-size: 15px;
+  line-height: 1.5;
+}
+.conv-msg.user .conv-bubble {
+  background: linear-gradient(135deg, #7C3AED, #6D28D9);
+  border-radius: 18px 4px 18px 18px;
+  font-size: 15px;
+  line-height: 1.5;
+}
+.conv-translation { font-size: 12px; color: var(--gray-400); font-style: italic; padding: 2px 6px; }
+
+/* Better topic cards */
+.conv-topic-card {
+  transition: transform .15s, box-shadow .15s;
+  box-shadow: 0 3px 0 var(--border);
+}
+.conv-topic-card:hover { transform: translateY(-2px); box-shadow: 0 5px 0 var(--border); }
+.conv-topic-card:active { transform: translateY(1px); box-shadow: 0 2px 0 var(--border); }
+
+/* Better suggestion chips */
+.conv-suggestion {
+  transition: all .12s;
+  box-shadow: 0 2px 0 #C4B5FD;
+}
+.conv-suggestion:active { transform: translateY(2px); box-shadow: 0 0 0 #C4B5FD; }
+
+/* Dictation — better look */
+.dictation-card {
+  box-shadow: 0 8px 24px rgba(0,0,0,.25);
+}
+.dictation-phrase {
+  font-size: 18px;
+  letter-spacing: .3px;
+  transition: filter .4s;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Speed buttons — Duolingo style */
+.audio-speed-wrap .spd-btn {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-weight: 800;
+  transition: all .12s;
+}
+
+/* Conv input area — cleaner */
+.conv-input-area {
+  box-shadow: 0 -4px 16px rgba(0,0,0,.06);
+}
+.conv-text-input {
+  font-size: 15px;
+  padding: 12px 14px;
+}
+
+/* Stats tiles — more card-like */
+.stats-tile {
+  box-shadow: 0 3px 0 var(--border);
+  transition: transform .12s;
+}
+.stats-tile:active { transform: scale(.97); }
+
+/* Badge cards — hover effect */
+.badge-card {
+  transition: transform .15s, box-shadow .15s;
+  box-shadow: 0 3px 0 var(--border);
+}
+.badge-card.earned {
+  box-shadow: 0 3px 0 #F59E0B;
+}
+.badge-card.earned:active { transform: scale(.96); }
+
+/* Weekly plan — goal cards */
+.goal-option {
+  box-shadow: 0 4px 0 var(--border);
+  transition: all .12s;
+}
+.goal-option.selected { box-shadow: 0 4px 0 var(--blue-dark); }
+.goal-option:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--border); }
+
+/* Error review items */
+.error-item { transition: background .15s; }
+.error-item:hover { background: var(--gray-100); }
+
+/* Recall card — nice shadow */
+.recall-inner { min-height: 170px; }
+
+/* Note panel — floating look */
+.note-panel.open {
+  box-shadow: 0 -4px 20px rgba(0,0,0,.1);
+}
+
 </style>
 </head>
 <body>
@@ -731,9 +838,9 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
     <div class="hearts" id="heartsDisplay">❤️ 3</div>
     <button class="note-toggle-btn" id="noteHeaderBtn" onclick="toggleNotePanel()" title="Anotação">📝</button>
   </div>
-  <div class="lesson-body" id="lessonBody"></div>
+  <div class="lesson-body" id="lessonBody" style="flex:1;overflow-y:auto"></div>
   <!-- Note panel (slides in above feedback bar) -->
-  <div class="note-panel" id="notePanel">
+  <div class="note-panel" id="notePanel" style="margin:0;border-radius:0;border-left:none;border-right:none;flex-shrink:0">
     <div class="note-panel-header">
       <div class="note-panel-title">📝 Minha anotação <span class="note-save-indicator" id="noteSaveIndicator">✓ salvo</span></div>
     </div>
@@ -763,8 +870,8 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
 </div>
 
 <!-- ══ SHADOWING ══ -->
-<div class="screen" id="shadowing">
-  <div class="review-header" style="background:linear-gradient(135deg,#5B21B6,#4338CA)">
+<div class="screen" id="shadowing" style="display:none;flex-direction:column">
+  <div class="review-header" style="background:linear-gradient(135deg,#5B21B6,#4338CA);flex-shrink:0">
     <button class="close-btn" style="color:#FFF;margin-bottom:5px" onclick="showScreen('home');renderHome()">← Voltar</button>
     <h2>🗣️ Shadowing</h2>
     <p>Ouça → repita imediatamente → compare</p>
@@ -783,8 +890,8 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
 </div>
 
 <!-- ══ NOTES SCREEN ══ -->
-<div class="screen" id="notesScreen">
-  <div class="notes-header">
+<div class="screen" id="notesScreen" style="display:none;flex-direction:column">
+  <div class="notes-header" style="flex-shrink:0">
     <button class="close-btn" style="color:#FFF;margin-bottom:6px" onclick="showScreen('home');renderHome()">← Voltar</button>
     <h2>📝 Minhas Anotações</h2>
     <p>Suas notas de todos os exercícios</p>
@@ -794,8 +901,8 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
 
 
 <!-- ══ STATS SCREEN ══ -->
-<div class="screen" id="statsScreen">
-  <div class="stats-header">
+<div class="screen" id="statsScreen" style="display:none;flex-direction:column">
+  <div class="stats-header" style="flex-shrink:0">
     <button class="close-btn" style="color:#FFF;margin-bottom:6px" onclick="showScreen('home');renderHome()">← Voltar</button>
     <h2>📊 Minhas Estatísticas</h2>
     <p>Seu progresso detalhado</p>
@@ -804,8 +911,8 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
 </div>
 
 <!-- ══ BADGES SCREEN ══ -->
-<div class="screen" id="badgesScreen">
-  <div class="badges-header">
+<div class="screen" id="badgesScreen" style="display:none;flex-direction:column">
+  <div class="badges-header" style="flex-shrink:0">
     <button class="close-btn" style="color:#FFF;margin-bottom:6px" onclick="showScreen('home');renderHome()">← Voltar</button>
     <h2>🏆 Conquistas</h2>
     <p>Badges conquistados e por conquistar</p>
@@ -814,8 +921,8 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
 </div>
 
 <!-- ══ BOSS MODE ══ -->
-<div class="screen" id="bossScreen">
-  <div class="boss-header">
+<div class="screen" id="bossScreen" style="display:none;flex-direction:column">
+  <div class="boss-header" style="flex-shrink:0">
     <button class="close-btn" style="color:#FFF;margin-bottom:4px" onclick="stopBoss()">✕</button>
     <h2>⚡ Modo Boss</h2>
     <div class="boss-header-row">
@@ -839,8 +946,8 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
 </div>
 
 <!-- ══ ERROR REVIEW ══ -->
-<div class="screen" id="errorReviewScreen">
-  <div class="error-review-panel">
+<div class="screen" id="errorReviewScreen" style="display:none;flex-direction:column">
+  <div class="error-review-panel" style="flex:1;overflow-y:auto">
     <div class="error-review-header">
       <div style="font-size:24px">❌</div>
       <div class="error-review-title">Revisão dos Erros</div>
@@ -856,19 +963,19 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
 <!-- ══ SHARE OVERLAY (injected by JS) ══ -->
 
 <!-- ══ CONVERSATION MODE ══ -->
-<div class="screen" id="convScreen">
-  <div class="conv-header">
+<div class="screen" id="convScreen" style="display:none;flex-direction:column;height:100vh">
+  <div class="conv-header" style="flex-shrink:0">
     <button class="close-btn" style="color:#FFF;margin-bottom:5px" onclick="showScreen('home');renderHome()">← Voltar</button>
     <h2>🗣️ Conversa Simulada</h2>
     <p>Pratique inglês em situações reais</p>
   </div>
-  <div id="convBody" class="conv-body"></div>
+  <div id="convBody" class="conv-body" style="flex:1;overflow-y:auto;display:flex;flex-direction:column"></div>
 </div>
 
 
 <!-- ══ DICTATION SCREEN ══ -->
-<div class="screen" id="dictationScreen">
-  <div class="review-header" style="background:linear-gradient(135deg,#1E3A5F,#0F2942)">
+<div class="screen" id="dictationScreen" style="display:none;flex-direction:column">
+  <div class="review-header" style="background:linear-gradient(135deg,#1E3A5F,#0F2942);flex-shrink:0">
     <button class="close-btn" style="color:#FFF;margin-bottom:5px" onclick="showScreen('home');renderHome()">← Voltar</button>
     <h2>🎧 Ditado</h2>
     <p>Ouça e escreva o que você ouviu</p>
@@ -877,8 +984,8 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
 </div>
 
 <!-- ══ WEEKLY PLAN ══ -->
-<div class="screen" id="weeklyScreen">
-  <div class="weekly-header">
+<div class="screen" id="weeklyScreen" style="display:none;flex-direction:column">
+  <div class="weekly-header" style="flex-shrink:0">
     <button class="close-btn" style="color:#FFF;margin-bottom:5px" onclick="showScreen('home');renderHome()">← Voltar</button>
     <h2>📅 Plano Semanal</h2>
     <p>Defina sua meta e acompanhe o progresso</p>
@@ -2898,7 +3005,7 @@ const Notes = {
 };
 
 // Current note state
-let _noteTimer = null;
+let _noteTimerHandle = null;
 
 function getNoteId() {
   return `${state.currentLesson}_${state.currentQ}`;
@@ -2941,10 +3048,10 @@ function toggleNotePanel() {
   }
 }
 
-let _saveTimer = null;
+let _noteSaveTimer = null;
 function autoSaveNote() {
-  clearTimeout(_saveTimer);
-  _saveTimer = setTimeout(() => {
+  clearTimeout(_noteSaveTimer);
+  _noteSaveTimer = setTimeout(() => {
     const textarea = document.getElementById('noteTextarea');
     if(!textarea) return;
     const text = textarea.value;
@@ -3644,6 +3751,7 @@ function openConversation() {
 
 function renderConvTopics() {
   const body = document.getElementById('convBody');
+  body.style.cssText = 'flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px';
   body.innerHTML = `
     <div style="font-size:14px;font-weight:700;color:var(--gray-600);margin-bottom:4px">Escolha um tema para praticar:</div>
     <div class="conv-topic-grid">
@@ -3813,7 +3921,8 @@ async function convRecord() {
 //  SHARE PROGRESS
 // ═══════════════════════════════════════════════
 function openShare() {
-  if(document.getElementById("shareOverlay")) return; // prevent duplicate
+  // Remove any existing overlay first
+  document.getElementById("shareOverlay")?.remove();
   const lv = getLevel(state.xp);
   const lvPct = getLevelProgress(state.xp);
   const earned = Badges.earned();
@@ -3932,11 +4041,12 @@ function renderDictationCard() {
     <div style="font-size:11px;font-weight:700;color:var(--gray-600);text-align:center">${levelLabels[phrase.level]||''}</div>
 
     <div class="dictation-card">
+      <div style="font-size:10px;font-weight:800;color:rgba(255,255,255,.5);text-transform:uppercase;letter-spacing:1.5px;text-align:center">Ouça e depois escreva:</div>
       <div class="dictation-phrase${dictState.revealed?"":" hidden"}" id="dictPhrase">${phrase.text}</div>
       <div class="audio-speed-wrap" style="justify-content:center">
-        <div class="audio-speed-label">Velocidade:</div>
+        <div class="audio-speed-label" style="color:rgba(255,255,255,.6)">Velocidade:</div>
         ${[0.5,0.75,1.0,1.25].map(s=>`
-          <button class="spd-btn${dictState.speed===s?' active':''}" onclick="setDictSpeed(${s})">${s}x</button>
+          <button style="border:2px solid ${dictState.speed===s?'#1CB0F6':'rgba(255,255,255,.3)'};border-radius:20px;padding:5px 11px;font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;cursor:pointer;background:${dictState.speed===s?'#1CB0F6':'transparent'};color:${dictState.speed===s?'#FFF':'rgba(255,255,255,.7)'}" onclick="setDictSpeed(${s})">${s}x</button>
         `).join('')}
       </div>
       <button class="pronun-listen-btn" style="align-self:center" id="dictPlayBtn" onclick="playDictation()">
@@ -3952,10 +4062,10 @@ function renderDictationCard() {
         autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
         onkeydown="if(event.key==='Enter')checkDictation()">
       <div style="display:flex;gap:8px">
-        <button class="check-btn" style="flex:1" onclick="checkDictation()">VERIFICAR</button>
-        <button class="dictation-reveal" onclick="revealDictation()">👁️ Ver frase</button>
+        <button class="check-btn" style="flex:1;padding:13px" onclick="checkDictation()">✓ VERIFICAR</button>
+        <button style="background:rgba(252,211,77,.15);border:2px solid #FCD34D;border-radius:12px;padding:10px 14px;font-family:'Nunito',sans-serif;font-weight:800;font-size:13px;cursor:pointer;color:#FCD34D;white-space:nowrap" onclick="revealDictation()">👁 Ver</button>
       </div>
-      <div id="dictFeedback" style="display:none"></div>
+      <div id="dictFeedback" style="display:none;border-radius:14px;overflow:hidden"></div>
     </div>
 
     <div style="display:flex;gap:8px;justify-content:center">
