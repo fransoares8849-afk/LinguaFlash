@@ -538,7 +538,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
 .spd-btn{border:2px solid var(--border);border-radius:20px;padding:5px 12px;font-family:'Nunito',sans-serif;font-weight:800;font-size:12px;cursor:pointer;background:var(--surface);color:var(--text);transition:all .15s}
 .spd-btn.active{background:var(--blue);border-color:var(--blue);color:#FFF}
 .spd-btn:hover:not(.active){border-color:var(--blue);color:var(--blue)}
-.dictation-input{width:100%;border:2px solid #2D5A8E;border-radius:12px;padding:12px 14px;font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:#FFF;background:#0F2942;outline:none;transition:border-color .2s}
+.dictation-input{width:100%;border:2px solid #2D5A8E;border-radius:12px;padding:12px 14px;font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;color:#E2E8F0;background:#0F2942;outline:none;transition:border-color .2s;caret-color:#93C5FD}
 .dictation-input:focus{border-color:var(--blue)}
 .dictation-input.correct{border-color:var(--green);background:#052E16}
 .dictation-input.wrong{border-color:var(--red);background:#450A0A}
@@ -728,6 +728,278 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
   box-shadow: 0 -4px 20px rgba(0,0,0,.1);
 }
 
+
+/* Dictation contrast fixes */
+.dictation-card { color: #E2E8F0; }
+.dictation-card label, .dictation-card .dictation-hint { color: #94A3B8 !important; }
+#dictationBody { padding: 16px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; flex: 1; background: var(--surface); }
+/* Fix "Digite o que você ouviu" label */
+.dict-label { font-size: 13px; font-weight: 800; color: var(--text); }
+/* Fix nav buttons in dictation */
+.nav-btn { font-size: 13px; padding: 9px 16px; }
+/* Conv screen fix */
+#convScreen { overflow: hidden; }
+#convScreen.active { display: flex; flex-direction: column; height: 100%; max-height: 100vh; }
+
+/* ── LEVEL SYSTEM ── */
+.level-section { display: flex; flex-direction: column; gap: 0; margin-bottom: 8px; }
+
+/* Level header banner */
+.level-header-banner {
+  border-radius: 16px 16px 0 0;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+.level-header-banner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.04);
+  opacity: 0;
+  transition: opacity .15s;
+}
+.level-header-banner:active::after { opacity: 1; }
+.level-banner-icon { font-size: 32px; flex-shrink: 0; }
+.level-banner-info { flex: 1; }
+.level-banner-name { font-family: 'Fredoka One', cursive; font-size: 20px; color: #FFF; line-height: 1; }
+.level-banner-sub { font-size: 12px; color: rgba(255,255,255,.8); font-weight: 600; margin-top: 3px; }
+.level-banner-progress { margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+.level-banner-pct { font-size: 13px; font-weight: 800; color: #FFF; }
+.level-banner-bar { width: 64px; height: 8px; background: rgba(255,255,255,.25); border-radius: 20px; overflow: hidden; }
+.level-banner-fill { height: 100%; background: #FFF; border-radius: 20px; transition: width .6s cubic-bezier(.34,1.56,.64,1); }
+.level-banner-chevron { font-size: 16px; color: rgba(255,255,255,.7); margin-left: 8px; transition: transform .2s; }
+.level-banner-chevron.open { transform: rotate(90deg); }
+
+/* Locked state */
+.level-locked-banner {
+  border-radius: 16px;
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: var(--gray-100);
+  border: 2px dashed var(--border);
+  margin-bottom: 8px;
+}
+[data-theme="dark"] .level-locked-banner { background: #1E293B; }
+.level-locked-icon { font-size: 32px; filter: grayscale(1); opacity: .5; }
+.level-locked-info { flex: 1; }
+.level-locked-name { font-size: 16px; font-weight: 800; color: var(--gray-600); }
+.level-locked-req { font-size: 12px; font-weight: 600; color: var(--gray-400); margin-top: 2px; }
+.level-locked-badge { background: var(--gray-200); border-radius: 20px; padding: 4px 12px; font-size: 12px; font-weight: 800; color: var(--gray-600); }
+
+/* Lessons grid inside level */
+.level-lessons-grid {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 16px 16px;
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  overflow: hidden;
+  transition: max-height .3s ease, padding .3s ease;
+}
+.level-lessons-grid.collapsed { max-height: 0; padding: 0 12px; }
+
+/* Lesson card — Duolingo style */
+.lesson-card {
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all .12s;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 4px 0 var(--border);
+  -webkit-tap-highlight-color: transparent;
+}
+.lesson-card:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--border); }
+.lesson-card.done { border-color: var(--green); box-shadow: 0 4px 0 #166534; background: var(--green-light); }
+[data-theme="dark"] .lesson-card.done { background: #052E16; }
+.lesson-card.done:active { box-shadow: 0 1px 0 #166534; }
+.lesson-card.perfect { border-color: var(--yellow); box-shadow: 0 4px 0 #D97706; }
+.lesson-card.perfect:active { box-shadow: 0 1px 0 #D97706; }
+.lesson-card-icon { font-size: 32px; line-height: 1; }
+.lesson-card-name { font-size: 12px; font-weight: 800; color: var(--text); line-height: 1.3; }
+.lesson-card-stars { display: flex; gap: 2px; }
+.lesson-card-star { font-size: 12px; }
+.lesson-card-badge { position: absolute; top: -6px; right: -6px; background: var(--green); border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 10px; border: 2px solid var(--surface); }
+.lesson-card.done .lesson-card-name { color: var(--green-dark); }
+[data-theme="dark"] .lesson-card.done .lesson-card-name { color: #86EFAC; }
+
+/* Level colors */
+.lv-beginner { background: linear-gradient(135deg, #16A34A, #15803D); }
+.lv-intermediate { background: linear-gradient(135deg, #2563EB, #1D4ED8); }
+.lv-advanced { background: linear-gradient(135deg, #7C3AED, #6D28D9); }
+.lv-fluent { background: linear-gradient(135deg, #D97706, #B45309); }
+
+/* Unlock animation */
+@keyframes unlockPop {
+  0% { transform: scale(.5); opacity: 0; }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.unlock-toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+  background: #FFF;
+  border-radius: 24px;
+  padding: 28px 32px;
+  box-shadow: 0 24px 64px rgba(0,0,0,.3);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  z-index: 300;
+  text-align: center;
+  animation: unlockPop .4s cubic-bezier(.34,1.56,.64,1);
+  min-width: 260px;
+}
+[data-theme="dark"] .unlock-toast { background: #1E293B; }
+.unlock-toast-icon { font-size: 64px; }
+.unlock-toast-title { font-family: 'Fredoka One', cursive; font-size: 24px; color: var(--text); }
+.unlock-toast-sub { font-size: 14px; font-weight: 600; color: var(--gray-600); }
+.unlock-toast-btn { background: var(--green); border: none; border-radius: 12px; padding: 12px 28px; color: #FFF; font-family: 'Nunito', sans-serif; font-weight: 800; font-size: 15px; cursor: pointer; box-shadow: 0 4px 0 #166534; transition: all .1s; }
+.unlock-toast-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #166534; }
+.unlock-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.5); z-index: 299; }
+
+
+/* ── LEVEL EXAM ── */
+#examScreen { background: var(--surface); }
+
+.exam-header {
+  padding: 20px 18px 16px;
+  color: #FFF;
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.exam-header::after { content:'📝'; position:absolute; right:14px; bottom:-6px; font-size:60px; opacity:.15; transition:none; }
+.exam-header h2 { font-family:'Fredoka One',cursive; font-size:22px; margin-bottom:3px; }
+.exam-header p { font-size:12px; opacity:.85; font-weight:600; }
+.exam-header-row { display:flex; align-items:center; justify-content:space-between; margin-top:10px; }
+.exam-timer { font-family:'Fredoka One',cursive; font-size:32px; color:#FFF; }
+.exam-timer.urgent { color:#FCD34D; animation:urgent-pulse .5s ease-in-out infinite alternate; }
+.exam-progress-row { display:flex; align-items:center; gap:10px; }
+.exam-q-count { font-size:13px; font-weight:800; color:rgba(255,255,255,.8); }
+
+.exam-body { padding:18px; display:flex; flex-direction:column; gap:14px; flex:1; overflow-y:auto; }
+.exam-feedback-bar { padding:12px 18px 20px; position:sticky; bottom:0; background:var(--surface); flex-shrink:0; }
+
+/* Exam result */
+.exam-result-wrap { display:flex; flex-direction:column; align-items:center; gap:16px; padding:20px 0; text-align:center; }
+.exam-result-icon { font-size:80px; animation:pop .5s cubic-bezier(.34,1.56,.64,1); }
+.exam-result-title { font-family:'Fredoka One',cursive; font-size:28px; color:var(--text); }
+.exam-result-score { font-size:56px; font-weight:900; }
+.exam-result-pass { color: var(--green); }
+.exam-result-fail { color: var(--red); }
+.exam-result-sub { font-size:14px; font-weight:600; color:var(--gray-600); line-height:1.6; max-width:280px; }
+.exam-stats-row { display:flex; gap:16px; }
+.exam-stat { text-align:center; }
+.exam-stat-val { font-size:28px; font-weight:900; }
+.exam-stat-lbl { font-size:11px; font-weight:700; color:var(--gray-600); text-transform:uppercase; }
+
+/* Exam card on level banner */
+.level-exam-btn {
+  background: linear-gradient(135deg, #F59E0B, #D97706);
+  border: none;
+  border-radius: 12px;
+  padding: 12px 16px;
+  color: #FFF;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #92400E;
+  transition: all .1s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  justify-content: center;
+  margin-top: 4px;
+}
+.level-exam-btn:active { transform: translateY(3px); box-shadow: 0 1px 0 #92400E; }
+.level-exam-btn.passed {
+  background: linear-gradient(135deg, #16A34A, #15803D);
+  box-shadow: 0 4px 0 #166534;
+  cursor: default;
+}
+.level-exam-btn.passed:active { transform: none; box-shadow: 0 4px 0 #166534; }
+
+.exam-required-notice {
+  background: var(--yellow);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: #78350F;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+.exam-locked-notice {
+  background: var(--gray-100);
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gray-600);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+}
+[data-theme="dark"] .exam-locked-notice { background: #1E293B; }
+
+
+/* Better PWA banner */
+.pwa-banner {
+  position: sticky;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: var(--surface);
+  border-top: 2px solid var(--border);
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  z-index: 100;
+  box-shadow: 0 -4px 16px rgba(0,0,0,.1);
+  animation: slideUp .3s ease;
+}
+.pwa-install-btn {
+  background: var(--purple);
+  border: none;
+  border-radius: 10px;
+  padding: 8px 16px;
+  color: #FFF;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+  box-shadow: 0 3px 0 #4C1D95;
+  white-space: nowrap;
+  transition: all .1s;
+}
+.pwa-install-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 #4C1D95; }
+
 </style>
 </head>
 <body>
@@ -816,11 +1088,17 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
       </div>
     </div>
     <div class="section-title">📚 Lições do FalaJá:</div>
-    <div class="levels-grid" id="levelsGrid"></div>
+      <div id="lessonsContainer" style="display:flex;flex-direction:column;gap:10px;padding-bottom:24px"></div>
   </div>
   <div class="pwa-banner" id="pwaBanner" style="display:none">
-    <p>📲 Instale o FalaJá no celular — aprenda onde estiver!</p>
-    <button class="pwa-install-btn" id="pwaInstallBtn">Instalar</button>
+    <div style="display:flex;align-items:center;gap:8px;flex:1">
+      <span style="font-size:20px">💬</span>
+      <div>
+        <div style="font-size:13px;font-weight:800;color:var(--text)">Instalar FalaJá</div>
+        <div style="font-size:11px;font-weight:600;color:var(--gray-600)">Aprenda offline, sem navegador!</div>
+      </div>
+    </div>
+    <button class="pwa-install-btn" onclick="window._installApp&&window._installApp()">Instalar</button>
     <button class="pwa-close-btn" onclick="document.getElementById('pwaBanner').style.display='none'">✕</button>
   </div>
   <!-- Floating notes button (visible when there are notes) -->
@@ -991,6 +1269,36 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
     <p>Defina sua meta e acompanhe o progresso</p>
   </div>
   <div class="weekly-body" id="weeklyBody"></div>
+</div>
+
+
+<!-- ══ EXAM SCREEN ══ -->
+<div class="screen" id="examScreen">
+  <div class="exam-header" id="examHeader">
+    <button class="close-btn" style="color:#FFF;margin-bottom:5px" onclick="quitExam()">✕</button>
+    <h2 id="examTitle">📝 Prova do Nível</h2>
+    <p id="examSubtitle">Mostre o que você aprendeu!</p>
+    <div class="exam-header-row">
+      <div class="exam-timer" id="examTimer">10:00</div>
+      <div class="exam-progress-row">
+        <div style="width:120px;height:10px;background:rgba(255,255,255,.2);border-radius:20px;overflow:hidden">
+          <div id="examPBar" style="height:100%;background:#FFF;border-radius:20px;transition:width .3s;width:0%"></div>
+        </div>
+        <div class="exam-q-count" id="examQCount">0/15</div>
+      </div>
+    </div>
+  </div>
+  <div class="exam-body" id="examBody"></div>
+  <div class="exam-feedback-bar">
+    <div class="result-feedback" id="examFeedback">
+      <div class="fb-icon" id="examFbIcon"></div>
+      <div class="fb-text">
+        <div class="fb-title" id="examFbTitle"></div>
+        <div class="fb-sub" id="examFbSub"></div>
+      </div>
+    </div>
+    <button class="check-btn" id="examCheckBtn" onclick="examCheck()" disabled>VERIFICAR</button>
+  </div>
 </div>
 
 <!-- ══ RESULT ══ -->
@@ -1803,7 +2111,7 @@ if(localStorage.getItem('darkMode')==='1'){state.dark=true;document.documentElem
 
 // PWA install prompt
 let deferredPrompt=null;
-window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('pwaBanner').style.display='flex';});
+// install handled by SW code above
 document.getElementById('pwaInstallBtn')?.addEventListener('click',()=>{if(deferredPrompt){deferredPrompt.prompt();deferredPrompt=null;document.getElementById('pwaBanner').style.display='none';}});
 
 // ═══════════════════════════════════════════════
@@ -1826,6 +2134,8 @@ function renderHome(){
   document.getElementById('darkToggle').textContent=state.dark?'☀️':'🌙';
   // Update notes floating button
   updateNoteFloatingBtn();
+  // Render level-based lessons
+  setTimeout(renderLessonsSection, 50);
   const due=SRS.countDue();
   const db=document.getElementById('dueCount');
   db.textContent=due>0?`${due}`:' 0 ';
@@ -1845,8 +2155,7 @@ function renderHome(){
     </div>`).join('');
 
   // Lesson grid
-  const grid=document.getElementById('levelsGrid'); grid.innerHTML='';
-  lessons.forEach((l,i)=>{
+  const grid=  lessons.forEach((l,i)=>{
     const completed=state.lessonData.completed?.includes(i);
     const locked=false; // Todas as lições liberadas desde o início
     const lDue=SRS.load().filter(c=>c.lessonIdx===i&&c.due<=Date.now()).length;
@@ -2203,62 +2512,66 @@ function shadowInLessonRate(ok){
 
 function processShadow(stream){
   const btn=document.getElementById('shadowMicBtn');
-  btn.classList.remove('recording');btn.textContent='⏳ Analisando...';btn.disabled=true;
+  btn.classList.remove('recording');btn.textContent='⏳...';btn.disabled=true;
   stream.getTracks().forEach(t=>t.stop());
   document.getElementById('ss2').className='shadow-step done';
-  document.getElementById('ss3').className='shadow-step active';
+  document.getElementById('ss3').className='shadow-step done';
+
   const q=lessons[state.currentLesson].questions[state.currentQ];
   const target=q.phrase.toLowerCase();
-
-  // Always create audio playback URL
   const blob=new Blob(shadowAC,{type:'audio/webm'});
   const audioUrl=URL.createObjectURL(blob);
 
-  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){
+  function showResult(best, score){
     const fb=document.getElementById('shadowFeedback');
-    fb.className='shadow-feedback show ok';
-    fb.innerHTML=`
-      <div style="font-weight:800;margin-bottom:5px">🎧 Ouça sua gravação:</div>
-      <audio controls src="${audioUrl}" style="width:100%;border-radius:8px"></audio>`;
-    document.getElementById('ss3').className='shadow-step done';
-    btn.disabled=false;btn.textContent='🎤 2. Repetir';
-    document.getElementById('checkBtn').textContent='CONTINUAR';return;
-  }
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  const rec=new SR();rec.lang='en-US';rec.interimResults=false;rec.maxAlternatives=3;
-  rec.onresult=e=>{
-    const best=e.results[0][0].transcript.toLowerCase().trim();
-    const score=calcSimilarity(best,target);
+    if(!fb) return;
     const scoreColor=score>=80?'var(--green)':score>=55?'var(--orange)':'var(--red)';
-    const fb=document.getElementById('shadowFeedback');
     fb.className=`shadow-feedback show ${score>=60?'ok':'bad'}`;
-    fb.innerHTML=`
-      <div style="font-weight:800;margin-bottom:4px">${score>=60?'✅ Ótimo!':'🔁 Continue!'} Você disse: "<em>${best}</em>"</div>
-      <div style="background:rgba(0,0,0,.1);border-radius:20px;height:8px;overflow:hidden;margin:5px 0">
-        <div style="height:100%;width:${score}%;background:${scoreColor};border-radius:20px"></div>
-      </div>
-      <div style="font-size:11px;font-weight:700;color:${scoreColor};margin-bottom:7px">${score}% de similaridade</div>
-      <div style="font-size:12px;font-weight:800;margin-bottom:3px">🎧 Ouça sua gravação:</div>
-      <audio controls src="${audioUrl}" style="width:100%;border-radius:8px"></audio>`;
-    document.getElementById('ss3').className='shadow-step done';
-    SFX[score>=70?'correct':'click']();
-    if(score>=60){state.correct++;showXPPopup('+10 XP ⚡');}
+    fb.innerHTML=best
+      ? `<div style="font-weight:800;margin-bottom:4px">${score>=60?'✅':'🔁'} "<em>${best}</em>" — ${score}%</div>
+         <audio controls src="${audioUrl}" style="width:100%;border-radius:8px;margin-top:4px"></audio>`
+      : `<div style="font-weight:800;margin-bottom:6px">🎧 Ouça e compare:</div>
+         <audio controls src="${audioUrl}" style="width:100%;border-radius:8px;margin-bottom:8px"></audio>
+         <div style="display:flex;gap:7px">
+           <button onclick="shadowInLessonRate(true)" style="flex:1;background:var(--green-light);border:2px solid var(--green);border-radius:10px;padding:8px;font-family:'Nunito',sans-serif;font-weight:800;cursor:pointer;color:var(--green-dark);font-size:12px">😄 Acertei</button>
+           <button onclick="shadowInLessonRate(false)" style="flex:1;background:var(--red-light);border:2px solid var(--red);border-radius:10px;padding:8px;font-family:'Nunito',sans-serif;font-weight:800;cursor:pointer;color:var(--red);font-size:12px">🔁 Rever</button>
+         </div>`;
+    if(score>=60){SFX.correct();state.correct++;showXPPopup('+10 XP ⚡');}else{SFX.click();}
     btn.disabled=false;btn.textContent='🎤 2. Repetir';
-    document.getElementById('checkBtn').disabled=false;
-    document.getElementById('checkBtn').textContent='CONTINUAR';
+    const cb=document.getElementById('checkBtn');
+    if(cb){cb.disabled=false;cb.textContent='CONTINUAR';}
+  }
+
+  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){
+    showResult('',0);return;
+  }
+
+  let done=false;
+  function finish(best){
+    if(done) return; done=true;
+    clearTimeout(timer);
+    const score=best?calcSimilarity(best,target):0;
+    showResult(best,score);
+  }
+
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  const rec=new SR();rec.lang='en-US';rec.interimResults=true;rec.maxAlternatives=3;
+  let bestText='';
+  rec.onresult=e=>{
+    let t='';
+    for(let i=e.resultIndex;i<e.results.length;i++) t+=e.results[i][0].transcript;
+    if(t.trim()) bestText=t.trim().toLowerCase();
   };
-  rec.onerror=()=>{
-    const fb=document.getElementById('shadowFeedback');
-    fb.className='shadow-feedback show ok';
-    fb.innerHTML=`
-      <div style="font-weight:800;margin-bottom:5px">🎧 Ouça sua gravação:</div>
-      <audio controls src="${audioUrl}" style="width:100%;border-radius:8px"></audio>`;
-    document.getElementById('ss3').className='shadow-step done';
-    btn.disabled=false;btn.textContent='🎤 2. Repetir';
-    document.getElementById('checkBtn').disabled=false;
-    document.getElementById('checkBtn').textContent='CONTINUAR';
-  };
-  rec.start();setTimeout(()=>{try{rec.stop();}catch(e){}},4000);
+  rec.onend=()=>finish(bestText);
+  rec.onerror=()=>finish(bestText||'');
+  const timer=setTimeout(()=>{try{rec.stop();}catch(e){finish(bestText||'');}},4000);
+  try{rec.start();}catch(e){finish('');}
+}
+
+function shadowInLessonRate(good){
+  if(good){state.correct++;showXPPopup('+10 XP ⚡');SFX.correct();}
+  const cb=document.getElementById('checkBtn');
+  if(cb){cb.disabled=false;cb.textContent='CONTINUAR';}
 }
 
 function calcSimilarity(a,b){
@@ -2371,6 +2684,12 @@ function finishLesson(){
     state.lessonData.completed.push(state.currentLesson);state.streak++;
   }
   if(acc===100){state.lessonData.perfects=(state.lessonData.perfects||0)+1;}
+  // Save stars for this lesson
+  if(!state.isQuickSession){
+    state.lessonData[`stars_${state.currentLesson}`] = stars;
+    // Check if a new level was unlocked
+    checkLevelUnlock(state.lessonData.completed||[]);
+  }
   state.lessonData.xp=state.xp;state.lessonData.streak=state.streak;state.lessonData.skills=state.skillProgress;
   localStorage.setItem('linguaflash',JSON.stringify(state.lessonData));
   // Track daily XP
@@ -2941,7 +3260,7 @@ function speakSentence(s){TTS.speak(s,document.getElementById('speakBtn'));}
 // TTS
 const TTS={
   synth:window.speechSynthesis,supported:!!window.speechSynthesis,voiceEN:null,
-  init(){if(!this.supported) return;const load=()=>{const v=this.synth.getVoices();this.voiceEN=v.find(x=>x.lang==='en-US'&&x.name.includes('Female'))||v.find(x=>x.lang==='en-US')||v.find(x=>x.lang==='en-GB')||v.find(x=>x.lang.startsWith('en'))||null;};load();if(this.synth.onvoiceschanged!==undefined) this.synth.onvoiceschanged=load;},
+  init(){if(!TTS.supported) return;const load=()=>{const v=this.synth.getVoices();this.voiceEN=v.find(x=>x.lang==='en-US'&&x.name.includes('Female'))||v.find(x=>x.lang==='en-US')||v.find(x=>x.lang==='en-GB')||v.find(x=>x.lang.startsWith('en'))||null;};load();if(this.synth.onvoiceschanged!==undefined) this.synth.onvoiceschanged=load;},
   speak(text,btn){if(!this.supported) return;this.synth.cancel();const u=new SpeechSynthesisUtterance(text);u.lang='en-US';u.rate=0.85;u.pitch=1.05;if(this.voiceEN) u.voice=this.voiceEN;if(btn){btn.classList.add('speaking');btn.innerHTML=`<div class="audio-wave"><span></span><span></span><span></span><span></span><span></span></div> Ouvindo...`;u.onend=u.onerror=()=>{btn.classList.remove('speaking');btn.innerHTML='🔊 Ouvir pronúncia';};}this.synth.speak(u);}
 };
 TTS.init();
@@ -4065,7 +4384,7 @@ function renderDictationCard() {
     </div>
 
     <div style="display:flex;flex-direction:column;gap:8px">
-      <div style="font-size:13px;font-weight:800;color:var(--text)">Digite o que você ouviu:</div>
+      <div class="dict-label">🎧 Digite o que você ouviu:</div>
       <input class="dictation-input" id="dictInput" type="text"
         placeholder="Escreva em inglês..."
         autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
@@ -4474,19 +4793,554 @@ StatsTracker.recordXP = function(xp) {
 const _origSpeak = TTS.speak.bind(TTS);
 TTS.speak = function(text, btn, rate) {
   if(!this.supported) return;
-  this.synth.cancel();
+  TTS.synth.cancel();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = 'en-US';
   u.rate = rate !== undefined ? rate : globalAudioSpeed;
   u.pitch = 1.05;
-  if(this.voiceEN) u.voice = this.voiceEN;
+  if(TTS.voiceEN) u.voice = TTS.voiceEN;
   if(btn){
     btn.classList.add('speaking');
     btn.innerHTML = '<div class="audio-wave"><span></span><span></span><span></span><span></span><span></span></div> Ouvindo...';
     u.onend = u.onerror = () => { btn.classList.remove('speaking'); btn.innerHTML = '🔊 Ouvir novamente'; };
   }
-  this.synth.speak(u);
+  TTS.synth.speak(u);
 };
+
+
+// ═══════════════════════════════════════════════
+//  LEVEL SYSTEM
+// ═══════════════════════════════════════════════
+const LESSON_LEVELS = [
+  {
+    id: 'beginner',
+    name: 'Iniciante',
+    icon: '🌱',
+    color: 'lv-beginner',
+    range: [0, 9],
+    unlockReq: 0, // always unlocked
+    unlockMsg: '',
+    lessons_needed: 0,
+  },
+  {
+    id: 'intermediate',
+    name: 'Intermediário',
+    icon: '📚',
+    color: 'lv-intermediate',
+    range: [10, 19],
+    unlockReq: 7, // need 7/10 beginner lessons
+    unlockMsg: 'Complete 7 lições do Iniciante',
+    lessons_needed: 7,
+  },
+  {
+    id: 'advanced',
+    name: 'Avançado',
+    icon: '🎯',
+    color: 'lv-advanced',
+    range: [20, 29],
+    unlockReq: 7, // need 7/10 intermediate
+    unlockMsg: 'Complete 7 lições do Intermediário',
+    lessons_needed: 7,
+  },
+  {
+    id: 'fluent',
+    name: 'Fluente',
+    icon: '🏆',
+    color: 'lv-fluent',
+    range: [30, 39],
+    unlockReq: 7, // need 7/10 advanced
+    unlockMsg: 'Complete 7 lições do Avançado',
+    lessons_needed: 7,
+  },
+];
+
+// Track which level sections are collapsed
+const _levelCollapsed = { beginner: false, intermediate: true, advanced: true, fluent: true };
+
+function getLevelUnlocked(levelObj, completed) {
+  if(levelObj.unlockReq === 0) return true;
+  const idx = LESSON_LEVELS.indexOf(levelObj);
+  if(idx <= 0) return true;
+  // Must pass the exam of the PREVIOUS level to unlock this one
+  const prev = LESSON_LEVELS[idx - 1];
+  return ExamProgress.passed(prev.id);
+}
+
+function getLevelProgress(levelObj, completed) {
+  const total = levelObj.range[1] - levelObj.range[0] + 1;
+  const done = completed.filter(id => id >= levelObj.range[0] && id <= levelObj.range[1]).length;
+  return { done, total, pct: Math.round(done / total * 100) };
+}
+
+function renderLessonsSection() {
+  const completed = state.lessonData.completed || [];
+  const container = document.getElementById('lessonsContainer');
+  if(!container) return;
+
+  container.innerHTML = LESSON_LEVELS.map(lv => {
+    const unlocked = getLevelUnlocked(lv, completed);
+    const { done, total, pct } = getLevelProgress(lv, completed);
+    const collapsed = _levelCollapsed[lv.id];
+
+    if(!unlocked) {
+      const idx = LESSON_LEVELS.indexOf(lv);
+      const prev = LESSON_LEVELS[idx - 1];
+      const prevDone = completed.filter(id => id >= prev.range[0] && id <= prev.range[1]).length;
+      const needed = lv.lessons_needed - prevDone;
+      return `
+        <div class="level-locked-banner">
+          <div class="level-locked-icon">${lv.icon}</div>
+          <div class="level-locked-info">
+            <div class="level-locked-name">🔒 ${lv.name}</div>
+            <div class="level-locked-req">Complete mais ${needed} lição${needed>1?'ões':''} do ${prev.name}</div>
+          </div>
+          <div class="level-locked-badge">${prevDone}/${lv.lessons_needed}</div>
+        </div>`;
+    }
+
+    // Build exam button
+    const examPassed = ExamProgress.passed(lv.id);
+    const canExam = canTakeExam(lv, completed);
+    const examBtnHTML = lv.lessons_needed > 0 ? (
+      examPassed
+        ? `<div class="level-exam-btn passed" style="grid-column:1/-1">✅ Prova concluída — ${ExamProgress.getBest(lv.id)}% de acerto</div>`
+        : canExam
+          ? `<button class="level-exam-btn" style="grid-column:1/-1" onclick="startLevelExam('${lv.id}')">🎯 Fazer Prova do Nível ${lv.name}</button>
+             <div class="exam-required-notice" style="grid-column:1/-1">⚠️ Precisa de ${EXAM_PASS_SCORE}% para desbloquear o próximo nível</div>`
+          : `<div class="exam-locked-notice" style="grid-column:1/-1">🔒 Complete ${lv.lessons_needed - done} lição${lv.lessons_needed-done>1?'ões':''} para liberar a prova</div>`
+    ) : '';
+
+    // Build lessons grid
+    const lessonCards = Array.from({length: total}, (_,i) => {
+      const lid = lv.range[0] + i;
+      const lesson = lessons[lid];
+      if(!lesson) return '';
+      const isDone = completed.includes(lid);
+      const stars = isDone ? (state.lessonData[`stars_${lid}`] || 1) : 0;
+      return `
+        <div class="lesson-card ${isDone ? 'done' : ''}" onclick="startLesson(${lid})">
+          <div class="lesson-card-icon">${lesson.icon}</div>
+          <div class="lesson-card-name">${lesson.name}</div>
+          <div class="lesson-card-stars">
+            ${[1,2,3].map(s=>`<span class="lesson-card-star">${s<=stars?'⭐':'☆'}</span>`).join('')}
+          </div>
+          ${isDone ? '<div class="lesson-card-badge">✓</div>' : ''}
+        </div>`;
+    }).join('');
+
+    return `
+      <div class="level-section" id="lvSection_${lv.id}">
+        <div class="level-header-banner ${lv.color}" onclick="toggleLevel('${lv.id}')">
+          <div class="level-banner-icon">${lv.icon}</div>
+          <div class="level-banner-info">
+            <div class="level-banner-name">${lv.name}</div>
+            <div class="level-banner-sub">${done}/${total} lições concluídas</div>
+          </div>
+          <div class="level-banner-progress">
+            <div class="level-banner-pct">${pct}%</div>
+            <div class="level-banner-bar">
+              <div class="level-banner-fill" style="width:${pct}%"></div>
+            </div>
+          </div>
+          <div class="level-banner-chevron ${collapsed?'':'open'}">▶</div>
+        </div>
+        <div class="level-lessons-grid ${collapsed?'collapsed':''}" id="lvGrid_${lv.id}" style="max-height:${collapsed?'0':'600px'}">
+          ${lessonCards}
+          ${examBtnHTML}
+        </div>
+      </div>`;
+  }).join('');
+}
+
+function toggleLevel(id) {
+  _levelCollapsed[id] = !_levelCollapsed[id];
+  const grid = document.getElementById('lvGrid_' + id);
+  const chevron = document.querySelector(`#lvSection_${id} .level-banner-chevron`);
+  if(grid) {
+    grid.style.maxHeight = _levelCollapsed[id] ? '0' : '500px';
+    grid.style.padding = _levelCollapsed[id] ? '0 12px' : '12px';
+  }
+  if(chevron) chevron.classList.toggle('open', !_levelCollapsed[id]);
+}
+
+function checkLevelUnlock(completed) {
+  // Unlock is now handled by exam system - this is a no-op
+}
+
+function showUnlockToast(lv) {
+  const overlay = document.createElement('div');
+  overlay.className = 'unlock-overlay';
+  const toast = document.createElement('div');
+  toast.className = 'unlock-toast';
+  toast.innerHTML = `
+    <div class="unlock-toast-icon">${lv.icon}</div>
+    <div class="unlock-toast-title">🎉 Desbloqueado!</div>
+    <div style="font-size:20px;font-weight:800;color:var(--text)">${lv.name}</div>
+    <div class="unlock-toast-sub">Parabéns! Você desbloqueou o nível ${lv.name}!<br>Novas lições estão disponíveis.</div>
+    <button class="unlock-toast-btn" onclick="this.closest('.unlock-toast').remove();document.querySelector('.unlock-overlay').remove();_levelCollapsed['${lv.id}']=false;renderLessonsSection();">
+      🚀 Explorar lições!
+    </button>`;
+  document.body.appendChild(overlay);
+  document.body.appendChild(toast);
+  launchConfetti();
+  SFX.finish();
+}
+
+
+// ═══════════════════════════════════════════════
+//  LEVEL EXAM SYSTEM
+// ═══════════════════════════════════════════════
+const EXAM_PASS_SCORE = 70; // 70% to pass
+const EXAM_QUESTIONS = 15;
+const EXAM_TIME = 10 * 60; // 10 minutes
+
+const ExamProgress = {
+  _key: 'falaja_exams',
+  load() { try{ return JSON.parse(localStorage.getItem(this._key)||'{}'); }catch(e){return{};} },
+  save(d) { localStorage.setItem(this._key, JSON.stringify(d)); },
+  passed(levelId) { return !!this.load()[levelId]?.passed; },
+  getBest(levelId) { return this.load()[levelId]?.bestScore || 0; },
+  record(levelId, score, passed) {
+    const d = this.load();
+    if(!d[levelId]) d[levelId] = {};
+    d[levelId].attempts = (d[levelId].attempts||0) + 1;
+    if(score > (d[levelId].bestScore||0)) d[levelId].bestScore = score;
+    if(passed) d[levelId].passed = true;
+    this.save(d);
+  }
+};
+
+let examState = {
+  levelId: null,
+  levelObj: null,
+  questions: [],
+  idx: 0,
+  correct: 0,
+  wrong: 0,
+  answered: false,
+  timerSecs: EXAM_TIME,
+  timerInterval: null,
+  selectedAnswer: null,
+  placedWords: [],
+  reorderItems: [],
+  errors: [],
+};
+
+function canTakeExam(levelObj, completed) {
+  const { done } = getLevelProgress(levelObj, completed);
+  return done >= levelObj.lessons_needed && levelObj.lessons_needed > 0;
+}
+
+function startLevelExam(levelId) {
+  const levelObj = LESSON_LEVELS.find(l => l.id === levelId);
+  if(!levelObj || levelObj.lessons_needed === 0) return;
+
+  // Build exam question pool from this level's lessons
+  const pool = [];
+  for(let lid = levelObj.range[0]; lid <= levelObj.range[1]; lid++) {
+    const lesson = lessons[lid];
+    if(!lesson) continue;
+    lesson.questions.forEach((q,qi) => {
+      if(['mcq','listen','fill','build','reorder'].includes(q.mode)) {
+        pool.push({lid, qi, q, lessonName: lesson.name, lessonIcon: lesson.icon});
+      }
+    });
+  }
+
+  if(pool.length < 5) { alert('Poucas questões disponíveis. Complete mais lições primeiro!'); return; }
+
+  // Pick 15 random questions (or fewer if not enough)
+  const count = Math.min(EXAM_QUESTIONS, pool.length);
+  const picked = pool.sort(() => Math.random() - .5).slice(0, count);
+
+  examState = {
+    levelId, levelObj,
+    questions: picked,
+    idx: 0, correct: 0, wrong: 0,
+    answered: false, selectedAnswer: null,
+    placedWords: [], reorderItems: [],
+    timerSecs: EXAM_TIME,
+    timerInterval: null,
+    errors: [],
+  };
+
+  // Style header with level color
+  const header = document.getElementById('examHeader');
+  const colorMap = { beginner:'#15803D', intermediate:'#1D4ED8', advanced:'#6D28D9', fluent:'#B45309' };
+  if(header) header.style.background = `linear-gradient(135deg, ${colorMap[levelId]||'#7C3AED'}, ${colorMap[levelId]||'#4C1D95'})`;
+
+  document.getElementById('examTitle').textContent = `📝 Prova — ${levelObj.name}`;
+  document.getElementById('examSubtitle').textContent = `${count} questões · Precisa de ${EXAM_PASS_SCORE}% para passar`;
+  document.getElementById('examQCount').textContent = `0/${count}`;
+
+  showScreen('examScreen');
+  startExamTimer();
+  renderExamQuestion();
+}
+
+function startExamTimer() {
+  clearInterval(examState.timerInterval);
+  examState.timerInterval = setInterval(() => {
+    examState.timerSecs--;
+    updateExamTimer();
+    if(examState.timerSecs <= 0) {
+      clearInterval(examState.timerInterval);
+      finishExam(true);
+    }
+  }, 1000);
+}
+
+function updateExamTimer() {
+  const el = document.getElementById('examTimer');
+  if(!el) return;
+  const m = Math.floor(examState.timerSecs / 60);
+  const s = examState.timerSecs % 60;
+  el.textContent = `${m}:${s.toString().padStart(2,'0')}`;
+  el.className = 'exam-timer' + (examState.timerSecs <= 60 ? ' urgent' : '');
+}
+
+function renderExamQuestion() {
+  const body = document.getElementById('examBody');
+  const total = examState.questions.length;
+
+  if(examState.idx >= total) { finishExam(false); return; }
+
+  const {q, lessonName, lessonIcon} = examState.questions[examState.idx];
+  document.getElementById('examQCount').textContent = `${examState.idx}/${total}`;
+  document.getElementById('examPBar').style.width = `${examState.idx/total*100}%`;
+  document.getElementById('examFeedback').className = 'result-feedback';
+
+  const btn = document.getElementById('examCheckBtn');
+  btn.disabled = true; btn.textContent = 'VERIFICAR';
+  examState.answered = false; examState.selectedAnswer = null;
+  examState.placedWords = []; examState.reorderItems = [];
+
+  const badge = `<span style="background:rgba(0,0,0,.1);color:#FFF;font-size:10px;font-weight:800;padding:3px 8px;border-radius:20px;display:inline-flex;align-items:center;gap:4px">${lessonIcon} ${lessonName} · Q${examState.idx+1}</span>`;
+
+  if(q.mode==='mcq'||q.mode==='listen') {
+    body.innerHTML = `${badge}
+      <div class="question-type">${q.typeLabel}</div>
+      <div class="char-card"><div class="char-avatar">💬</div><div class="char-bubble">${q.prompt}</div></div>
+      ${isEnglish(q.prompt||'')?`<button class="audio-btn" onclick="TTS.speak('${esc(q.prompt||'')}')">🔊</button>`:''}
+      <div class="options-list">
+        ${q.options.map((o,i)=>`<button class="option-btn" onclick="examSelectOption(this,'${esc(o)}')"><span class="option-letter">${'ABCD'[i]}</span>${o}</button>`).join('')}
+      </div>`;
+  } else if(q.mode==='fill') {
+    body.innerHTML = `${badge}
+      <div class="question-type">${q.typeLabel}</div>
+      <div class="hint-row">💡 ${q.hint}</div>
+      <div class="question-text">${q.promptPre} <span style="color:var(--blue)">___</span> ${q.promptPost}</div>
+      <input class="answer-input" id="examInput" type="text" placeholder="Digite..."
+        oninput="document.getElementById('examCheckBtn').disabled=this.value.trim().length===0"
+        onkeydown="if(event.key==='Enter'&&!document.getElementById('examCheckBtn').disabled)examCheck()"
+        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">`;
+    setTimeout(()=>document.getElementById('examInput')?.focus(),80);
+  } else if(q.mode==='build') {
+    examState.placedWords = [];
+    const sh = [...q.words].sort(()=>Math.random()-.5);
+    body.innerHTML = `${badge}
+      <div class="question-type">${q.typeLabel}</div>
+      <div class="question-text" style="font-size:17px">${q.promptPT}</div>
+      <div class="sentence-area" id="examSentence" onclick="examRemoveWord(event)"></div>
+      <div class="word-pool">${sh.map(w=>`<div class="word-chip" onclick="examAddWord(this,'${esc(w)}')">${w}</div>`).join('')}</div>`;
+  } else if(q.mode==='reorder') {
+    examState.reorderItems = [...q.words].sort(()=>Math.random()-.5);
+    body.innerHTML = `${badge}
+      <div class="question-type">${q.typeLabel}</div>
+      <div class="reorder-area" id="examReorder"></div>`;
+    renderExamReorder();
+    btn.disabled = false;
+  }
+}
+
+function renderExamReorder() {
+  const area = document.getElementById('examReorder');
+  if(!area) return;
+  area.innerHTML = '';
+  examState.reorderItems.forEach((w,i) => {
+    const div = document.createElement('div');
+    div.className='reorder-item'; div.draggable=true; div.dataset.idx=i;
+    div.innerHTML=`<span class="drag-handle">⠿</span>${w}`;
+    div.addEventListener('dragstart',()=>{examState._drag=i;div.classList.add('dragging')});
+    div.addEventListener('dragend',()=>{div.classList.remove('dragging');area.querySelectorAll('.reorder-item').forEach(e=>e.classList.remove('over'))});
+    div.addEventListener('dragover',e=>{e.preventDefault();div.classList.add('over')});
+    div.addEventListener('dragleave',()=>div.classList.remove('over'));
+    div.addEventListener('drop',e=>{e.preventDefault();div.classList.remove('over');const from=examState._drag,to=i;if(from!==to){[examState.reorderItems[from],examState.reorderItems[to]]=[examState.reorderItems[to],examState.reorderItems[from]];renderExamReorder();}});
+    let sY=0;
+    div.addEventListener('touchstart',e=>{examState._drag=i;sY=e.touches[0].clientY},{passive:true});
+    div.addEventListener('touchend',e=>{const diff=e.changedTouches[0].clientY-sY;if(Math.abs(diff)<8)return;const dir=diff>0?1:-1,to=Math.max(0,Math.min(examState.reorderItems.length-1,i+dir));if(to!==i){[examState.reorderItems[i],examState.reorderItems[to]]=[examState.reorderItems[to],examState.reorderItems[i]];renderExamReorder();}},{passive:true});
+    area.appendChild(div);
+  });
+}
+
+function examSelectOption(btnEl, value) {
+  if(examState.answered) return;
+  SFX.click();
+  document.querySelectorAll('#examBody .option-btn').forEach(b=>b.classList.remove('selected'));
+  btnEl.classList.add('selected');
+  examState.selectedAnswer = value;
+  document.getElementById('examCheckBtn').disabled = false;
+  if(isEnglish(value)) TTS.speak(value);
+}
+
+function examAddWord(chip, word) {
+  if(chip.classList.contains('used')) return;
+  SFX.click(); chip.classList.add('used');
+  examState.placedWords.push({word,chip});
+  const area = document.getElementById('examSentence');
+  const p = document.createElement('div');
+  p.className='word-chip placed'; p.textContent=word; p.dataset.idx=examState.placedWords.length-1;
+  area.appendChild(p);
+  document.getElementById('examCheckBtn').disabled = false;
+}
+
+function examRemoveWord(e) {
+  const chip = e.target.closest('.word-chip.placed');
+  if(!chip||examState.answered) return;
+  const idx = parseInt(chip.dataset.idx);
+  examState.placedWords[idx]?.chip.classList.remove('used');
+  examState.placedWords.splice(idx,1);
+  document.getElementById('examSentence').removeChild(chip);
+  document.getElementById('examSentence').querySelectorAll('.word-chip').forEach((c,i)=>c.dataset.idx=i);
+  document.getElementById('examCheckBtn').disabled = examState.placedWords.length===0;
+}
+
+function examCheck() {
+  if(examState.answered) { examNext(); return; }
+  examState.answered = true;
+  const {q} = examState.questions[examState.idx];
+  let correct = false;
+  let userAnswer = '';
+
+  if(q.mode==='mcq'||q.mode==='listen') {
+    userAnswer = examState.selectedAnswer || '';
+    correct = userAnswer === q.answer;
+    document.querySelectorAll('#examBody .option-btn').forEach(b=>{
+      const txt=[...b.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent.trim()).join('');
+      if(txt===q.answer) b.classList.add('correct');
+      else if(b.classList.contains('selected')) b.classList.add('wrong');
+      b.disabled=true;
+    });
+  } else if(q.mode==='fill') {
+    const inp=document.getElementById('examInput');
+    userAnswer = inp.value.trim();
+    correct = userAnswer.toLowerCase()===q.answer.toLowerCase();
+    inp.classList.add(correct?'correct':'wrong'); inp.disabled=true;
+  } else if(q.mode==='build') {
+    userAnswer = examState.placedWords.map(p=>p.word).join(' ');
+    correct = userAnswer.toLowerCase()===q.answer.toLowerCase();
+    const sa=document.getElementById('examSentence');
+    if(sa){sa.style.borderColor=correct?'var(--green)':'var(--red)';sa.style.background=correct?'var(--green-light)':'var(--red-light)';}
+  } else if(q.mode==='reorder') {
+    userAnswer = examState.reorderItems.join(' ');
+    correct = userAnswer === q.sentence;
+  }
+
+  if(correct){examState.correct++;SFX.correct();}else{examState.wrong++;SFX.wrong();examState.errors.push({...q,userAnswer});}
+
+  const ca = q.answer||(q.mode==='reorder'?q.sentence:'');
+  document.getElementById('examFbIcon').textContent = correct?'✅':'❌';
+  document.getElementById('examFbTitle').textContent = correct?getRandomPraise():'Resposta correta:';
+  document.getElementById('examFbTitle').className = 'fb-title '+(correct?'correct-fb':'wrong-fb');
+  document.getElementById('examFbSub').textContent = correct?'':ca;
+  document.getElementById('examFeedback').className = 'result-feedback '+(correct?'correct-fb':'wrong-fb')+' show';
+  document.getElementById('examCheckBtn').disabled = false;
+  document.getElementById('examCheckBtn').textContent = 'CONTINUAR →';
+}
+
+function examNext() {
+  examState.idx++;
+  if(examState.idx >= examState.questions.length) finishExam(false);
+  else renderExamQuestion();
+}
+
+function quitExam() {
+  clearInterval(examState.timerInterval);
+  goHome();
+}
+
+function finishExam(timeUp) {
+  clearInterval(examState.timerInterval);
+  const total = examState.questions.length;
+  const correct = examState.correct;
+  const pct = Math.round(correct/total*100);
+  const passed = pct >= EXAM_PASS_SCORE && !timeUp;
+  const lv = examState.levelObj;
+
+  // Record result
+  ExamProgress.record(examState.levelId, pct, passed);
+
+  // If passed, unlock next level
+  if(passed) {
+    const nextIdx = LESSON_LEVELS.indexOf(lv) + 1;
+    const nextLevel = LESSON_LEVELS[nextIdx];
+    if(nextLevel) {
+      // Mark as unlocked via exam
+      const d = ExamProgress.load();
+      if(!d[nextLevel.id]) d[nextLevel.id] = {};
+      d[nextLevel.id].examUnlocked = true;
+      ExamProgress.save(d);
+    }
+    // Give XP
+    const xpEarned = Math.round(pct * 2);
+    state.xp += xpEarned;
+    state.lessonData.xp = state.xp;
+    localStorage.setItem('linguaflash', JSON.stringify(state.lessonData));
+    StatsTracker.recordXP(xpEarned);
+  }
+
+  const body = document.getElementById('examBody');
+  const timeMsgShow = timeUp ? '⏱️ Tempo esgotado! ' : '';
+  const passIcon = passed ? '🏆' : pct >= 50 ? '📚' : '💪';
+  const passMsg = passed
+    ? `Parabéns! Você passou e desbloqueou o nível <strong>${LESSON_LEVELS[LESSON_LEVELS.indexOf(lv)+1]?.name||'seguinte'}</strong>!`
+    : timeUp
+    ? 'O tempo acabou. Revise as lições e tente novamente!'
+    : `Você precisa de ${EXAM_PASS_SCORE}%. Revise as lições e tente de novo!`;
+
+  body.innerHTML = `
+    <div class="exam-result-wrap">
+      <div class="exam-result-icon">${passIcon}</div>
+      <div class="exam-result-title">${timeMsgShow}${passed?'Aprovado!':'Tente novamente'}</div>
+      <div class="exam-result-score ${passed?'exam-result-pass':'exam-result-fail'}">${pct}%</div>
+      <div style="background:var(--gray-200);border-radius:20px;height:14px;overflow:hidden;width:100%;max-width:280px">
+        <div style="height:100%;width:${pct}%;background:${passed?'var(--green)':'var(--red)'};border-radius:20px;transition:width 1s cubic-bezier(.34,1.56,.64,1)"></div>
+      </div>
+      <div style="font-size:13px;font-weight:700;color:${passed?'var(--green-dark)':'var(--red)'}">${passed?'✅':'❌'} Mínimo necessário: ${EXAM_PASS_SCORE}%</div>
+      <div class="exam-stats-row">
+        <div class="exam-stat"><div class="exam-stat-val" style="color:var(--green)">${correct}</div><div class="exam-stat-lbl">✅ Acertos</div></div>
+        <div class="exam-stat"><div class="exam-stat-val" style="color:var(--red)">${total-correct}</div><div class="exam-stat-lbl">❌ Erros</div></div>
+        <div class="exam-stat"><div class="exam-stat-val" style="color:var(--blue)">${total}</div><div class="exam-stat-lbl">📝 Total</div></div>
+      </div>
+      <div class="exam-result-sub">${passMsg}</div>
+      ${passed?`<div style="background:rgba(22,163,74,.1);border:2px solid var(--green);border-radius:14px;padding:12px 16px;font-size:13px;font-weight:700;color:var(--green-dark)">🎉 +${Math.round(pct*2)} XP ganhos!</div>`:''}
+    </div>
+    ${examState.errors.length>0&&!passed?`
+    <div style="font-size:13px;font-weight:800;color:var(--gray-600);text-transform:uppercase;letter-spacing:1px">Revisar erros:</div>
+    ${examState.errors.slice(0,5).map(e=>`
+      <div style="background:var(--red-light);border:2px solid var(--red);border-radius:12px;padding:12px 14px;font-size:13px;font-weight:600;color:var(--red)">
+        <div style="font-weight:800">❌ ${e.typeLabel||''}</div>
+        <div>Sua resposta: "${e.userAnswer||'(nenhuma)'}"</div>
+        <div style="color:var(--green-dark);font-weight:800">✅ Correto: "${e.answer||(e.mode==='reorder'?e.sentence:'')}"</div>
+      </div>`).join('')}`:''}`;
+
+  document.getElementById('examCheckBtn').textContent = passed ? '🚀 Ver novo nível!' : '🔄 Tentar novamente';
+  document.getElementById('examCheckBtn').disabled = false;
+  document.getElementById('examCheckBtn').onclick = () => {
+    if(passed) { goHome(); setTimeout(()=>{ _levelCollapsed[LESSON_LEVELS[LESSON_LEVELS.indexOf(lv)+1]?.id||''] = false; renderLessonsSection(); }, 100); }
+    else { startLevelExam(examState.levelId); }
+    document.getElementById('examCheckBtn').onclick = ()=>examCheck();
+  };
+  document.getElementById('examFeedback').className = 'result-feedback';
+  if(passed) { launchConfetti(); SFX.finish(); }
+}
+
+
+
+function showInstallButton() {
+  const banner = document.getElementById('pwaBanner');
+  if(banner) banner.style.display = 'flex';
+}
 
 // UTILS
 function isEnglish(text){const e=/\b(the|is|are|am|was|were|I|you|he|she|it|we|they|my|your|his|her|in|on|at|to|a|an|and|or|of|for|with|have|has|how|what|where|when|who|nice|good|morning|meet|name|old|there|sky|grass|dog|cat|coffee|every|hotel|flight|sun|lion|two|plus|equals|hungry|this|that)\b/i;return e.test(text)||/^[a-zA-Z\s\d.,!?'"'-]+$/.test(text.trim());}
