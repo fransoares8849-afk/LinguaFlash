@@ -467,6 +467,26 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
         <div class="quick-card-icon">⚡</div>
         <div class="quick-card-body"><h3>Modo Boss</h3><p>3 min · 10 questões</p></div>
       </div>
+      <div class="quick-card" style="background:rgba(5,150,105,.2);border:2px solid rgba(52,211,153,.4)" onclick="openConversation()">
+        <div class="quick-card-icon">🗣️</div>
+        <div class="quick-card-body"><h3>Conversar</h3><p>Diálogo simulado</p></div>
+      </div>
+      <div class="quick-card" style="background:rgba(37,211,102,.2);border:2px solid rgba(37,211,102,.4);grid-column:1/-1" onclick="openShare()">
+        <div class="quick-card-icon">📊</div>
+        <div class="quick-card-body"><h3>Compartilhar Progresso</h3><p>Envie no WhatsApp ou copie</p></div>
+      </div>
+      <div class="quick-card" style="background:rgba(14,116,144,.2);border:2px solid rgba(34,211,238,.4)" onclick="openDictation()">
+        <div class="quick-card-icon">🎧</div>
+        <div class="quick-card-body"><h3>Ditado</h3><p>Ouça e escreva</p></div>
+      </div>
+      <div class="quick-card" style="background:rgba(124,58,237,.2);border:2px solid rgba(167,139,250,.4)" onclick="startRecallReview()">
+        <div class="quick-card-icon">✍️</div>
+        <div class="quick-card-body"><h3>Recall SRS</h3><p>Escreva antes de ver</p></div>
+      </div>
+      <div class="quick-card" style="background:rgba(2,132,199,.2);border:2px solid rgba(56,189,248,.4);grid-column:1/-1" onclick="openWeeklyPlan()">
+        <div class="quick-card-icon">📅</div>
+        <div class="quick-card-body"><h3>Plano Semanal</h3><p>Meta diária + revisão matinal</p></div>
+      </div>
       <div class="quick-card" style="background:rgba(245,158,11,.2);border:2px solid rgba(251,191,36,.4)" onclick="openBadges()">
         <div class="quick-card-icon">🏆</div>
         <div class="quick-card-body"><h3>Conquistas</h3><p>Badges desbloqueados</p></div>
@@ -615,6 +635,40 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
   <div style="padding:14px 18px 24px;background:var(--surface)">
     <button class="check-btn" onclick="goHome()">VOLTAR AO INÍCIO</button>
   </div>
+</div>
+
+
+<!-- ══ SHARE OVERLAY (injected by JS) ══ -->
+
+<!-- ══ CONVERSATION MODE ══ -->
+<div class="screen" id="convScreen">
+  <div class="conv-header">
+    <button class="close-btn" style="color:#FFF;margin-bottom:5px" onclick="showScreen('home');renderHome()">← Voltar</button>
+    <h2>🗣️ Conversa Simulada</h2>
+    <p>Pratique inglês em situações reais</p>
+  </div>
+  <div id="convBody" class="conv-body"></div>
+</div>
+
+
+<!-- ══ DICTATION SCREEN ══ -->
+<div class="screen" id="dictationScreen">
+  <div class="review-header" style="background:linear-gradient(135deg,#1E3A5F,#0F2942)">
+    <button class="close-btn" style="color:#FFF;margin-bottom:5px" onclick="showScreen('home');renderHome()">← Voltar</button>
+    <h2>🎧 Ditado</h2>
+    <p>Ouça e escreva o que você ouviu</p>
+  </div>
+  <div class="review-body" id="dictationBody"></div>
+</div>
+
+<!-- ══ WEEKLY PLAN ══ -->
+<div class="screen" id="weeklyScreen">
+  <div class="weekly-header">
+    <button class="close-btn" style="color:#FFF;margin-bottom:5px" onclick="showScreen('home');renderHome()">← Voltar</button>
+    <h2>📅 Plano Semanal</h2>
+    <p>Defina sua meta e acompanhe o progresso</p>
+  </div>
+  <div class="weekly-body" id="weeklyBody"></div>
 </div>
 
 <!-- ══ RESULT ══ -->
@@ -1123,6 +1177,191 @@ const lessons = [
   {mode:'shadowing',typeLabel:'Shadowing',skill:'speaking',phrase:"I see your point. However, from my perspective, we should consider other options first.",translation:'Entendo seu ponto. Porém, do meu ponto de vista, deveríamos considerar outras opções primeiro.'},
   {mode:'reorder',typeLabel:'Ordene as palavras',skill:'grammar',sentence:'In my opinion this approach is more efficient.',words:['efficient.','In','approach','opinion','more','my','is','this']}
  ]}
+,
+ // ══════════════════════════════════════════
+ //  BLOCO 4 — Fluência Avançada
+ // ══════════════════════════════════════════
+ {id:30,name:"Reported Speech",icon:"📢",skills:{vocab:2,grammar:4,listening:1,speaking:1},questions:[
+  {mode:'story',typeLabel:'Leia a mini-história',skill:'listening',
+   text:'Tom said he [was|was] tired. Ana told him she [had finished|had finished] the report. The manager announced that the meeting [would be|would be] cancelled. Everyone said they [were|were] relieved.',
+   question:'O que o gerente anunciou?',answer:'The meeting would be cancelled.',options:['The meeting was starting.','The meeting would be cancelled.','The report was ready.','Everyone was tired.']},
+  {mode:'mcq',typeLabel:'Transforme para discurso indireto',skill:'grammar',prompt:'"I am tired," he said.',answer:'He said he was tired.',options:['He said he is tired.','He said I am tired.','He said he was tired.','He told he was tired.']},
+  {mode:'match',typeLabel:'Direto → Indireto',skill:'grammar',pairs:[['"I will help"','he said he would help'],['"I am working"','she said she was working'],['"I have finished"','he said he had finished'],['"I can do it"','she said she could do it']]},
+  {mode:'build',typeLabel:'Monte a frase',skill:'grammar',promptPT:'Ela disse que estava com fome.',words:['She','said','that','she','was','hungry','.'],answer:'She said that she was hungry .'},
+  {mode:'fill',typeLabel:'Complete a frase',skill:'grammar',promptPre:'He told me he',blank:'would',promptPost:'call me back.',answer:'would',hint:'Ele me disse que ___ me ligar de volta.'},
+  {mode:'dialogue',typeLabel:'Leia o diálogo',skill:'listening',
+   lines:[{who:'👩',en:'What did the boss say?',pt:'O que o chefe disse?'},
+          {who:'👨',en:'He said we had to finish the project by Friday.',pt:'Ele disse que tínhamos que terminar o projeto até sexta.'},
+          {who:'👩',en:'Did he say anything else?',pt:'Ele disse mais alguma coisa?'},
+          {who:'👨',en:'Yes, he mentioned that he would review it on Monday.',pt:'Sim, ele mencionou que revisaria na segunda.'}],
+   question:'Quando o chefe revisaria o projeto?',answer:'On Monday.',options:['On Friday.','On Monday.','On Wednesday.','On Thursday.']},
+  {mode:'shadowing',typeLabel:'Shadowing',skill:'speaking',phrase:'She told me that she had already sent the email.',translation:'Ela me disse que já tinha enviado o e-mail.'},
+  {mode:'reorder',typeLabel:'Ordene as palavras',skill:'grammar',sentence:'He said that he was very happy with the results.',words:['results.','He','with','said','was','that','very','the','happy','he']}
+ ]},
+ {id:31,name:"Artigos",icon:"📝",skills:{vocab:2,grammar:4,listening:1,speaking:1},questions:[
+  {mode:'story',typeLabel:'Leia a mini-história',skill:'listening',
+   text:'I saw [a|a] dog in [the|the] park. [The|The] dog was playing with [a|a] ball. [A|A] child came running and took [the|the] ball. [The|The] child laughed and [the|the] dog barked happily.',
+   question:'O que a criança fez?',answer:'She took the ball.',options:['She ran away.','She took the ball.','She petted the dog.','She threw the ball.']},
+  {mode:'mcq',typeLabel:'Escolha o artigo correto',skill:'grammar',prompt:'___ Eiffel Tower is in Paris.',answer:'The',options:['A','An','The','(none)']},
+  {mode:'match',typeLabel:'Regra × Exemplo',skill:'grammar',pairs:[['a + consoante','a book'],['an + vogal','an apple'],['the = específico','the moon'],['sem artigo = geral','I love music']]},
+  {mode:'build',typeLabel:'Monte a frase',skill:'grammar',promptPT:'Eu tenho um gato e o gato é laranja.',words:['I','have','a','cat','and','the','cat','is','orange','.'],answer:'I have a cat and the cat is orange .'},
+  {mode:'fill',typeLabel:'Complete a frase',skill:'grammar',promptPre:'She is',blank:'an',promptPost:'engineer at a big company.',answer:'an',hint:'Ela é ___ engenheira numa grande empresa.'},
+  {mode:'mcq',typeLabel:'Quando NÃO usar artigo?',skill:'grammar',prompt:'___ Brazil is a beautiful country.',answer:'(sem artigo)',options:['A','An','The','(sem artigo)']},
+  {mode:'shadowing',typeLabel:'Shadowing',skill:'speaking',phrase:'I saw a great movie last night. The story was amazing.',translation:'Assisti um ótimo filme ontem. A história era incrível.'},
+  {mode:'reorder',typeLabel:'Ordene as palavras',skill:'grammar',sentence:'The book I bought yesterday was an interesting one.',words:['one.','The','an','book','was','I','yesterday','interesting','bought']}
+ ]},
+ {id:32,name:"Preposições",icon:"📍",skills:{vocab:3,grammar:3,listening:1,speaking:1},questions:[
+  {mode:'story',typeLabel:'Leia a mini-história',skill:'listening',
+   text:'Ana lives [in|in] São Paulo. She works [at|at] a hospital [on|on] Mondays. She usually arrives [at|at] 8am and leaves [at|at] 6pm. [On|On] weekends she goes [to|to] the beach [with|with] her family.',
+   question:'Quando Ana vai à praia?',answer:'On weekends.',options:['On Mondays.','Every day.','On weekends.','On Fridays.']},
+  {mode:'match',typeLabel:'Ligue as preposições',skill:'grammar',pairs:[['in + mês/ano','in July, in 2020'],['on + dia','on Monday, on Friday'],['at + hora','at 8pm, at noon'],['at + local específico','at the airport']]},
+  {mode:'mcq',typeLabel:'Complete a frase',skill:'grammar',prompt:'I will see you ___ Monday morning.',answer:'on',options:['in','at','on','by']},
+  {mode:'build',typeLabel:'Monte a frase',skill:'grammar',promptPT:'Ela chegou ao aeroporto às 10h na terça.',words:['She','arrived','at','the','airport','at','10am','on','Tuesday','.'],answer:'She arrived at the airport at 10am on Tuesday .'},
+  {mode:'fill',typeLabel:'Complete a frase',skill:'grammar',promptPre:'I have been living here',blank:'for',promptPost:'three years.',answer:'for',hint:'Moro aqui ___ três anos.'},
+  {mode:'mcq',typeLabel:'Qual está correto?',skill:'grammar',prompt:'She is good ___ playing the piano.',answer:'at',options:['in','on','at','with']},
+  {mode:'shadowing',typeLabel:'Shadowing',skill:'speaking',phrase:'I will meet you at the café on Friday at seven in the evening.',translation:'Vou te encontrar no café na sexta às sete da noite.'},
+  {mode:'reorder',typeLabel:'Ordene as palavras',skill:'grammar',sentence:'She has been working at this company for ten years.',words:['years.','She','this','been','working','for','ten','at','has','company']}
+ ]},
+ {id:33,name:"Entrevista de Emprego",icon:"👔",skills:{vocab:4,grammar:2,listening:2,speaking:2},questions:[
+  {mode:'dialogue',typeLabel:'Entrevista de emprego',skill:'listening',
+   lines:[{who:'👔',en:'Tell me a little about yourself.',pt:'Me fale um pouco sobre você.'},
+          {who:'👩',en:'I have five years of experience in marketing and I am passionate about data analysis.',pt:'Tenho cinco anos de experiência em marketing e sou apaixonada por análise de dados.'},
+          {who:'👔',en:'What is your greatest strength?',pt:'Qual é sua maior qualidade?'},
+          {who:'👩',en:'I am very organized and I always meet my deadlines.',pt:'Sou muito organizada e sempre cumpro meus prazos.'}],
+   question:'Qual qualidade a candidata menciona?',answer:'She is organized and meets deadlines.',options:['She speaks many languages.','She is organized and meets deadlines.','She has ten years of experience.','She is very creative.']},
+  {mode:'match',typeLabel:'Vocabulário de entrevista',skill:'vocab',pairs:[['strengths','pontos fortes'],['weaknesses','pontos fracos'],['achievements','conquistas'],['references','referências']]},
+  {mode:'mcq',typeLabel:'Como responder?',skill:'vocab',prompt:'"What is your greatest weakness?"',answer:'I tend to be a perfectionist, but I am working on it.',options:['I have no weaknesses.','I tend to be a perfectionist, but I am working on it.','I am very bad at everything.','I do not like to work.']},
+  {mode:'build',typeLabel:'Monte a frase',skill:'grammar',promptPT:'Tenho experiência com gestão de projetos.',words:['I','have','experience','with','project','management','.'],answer:'I have experience with project management .'},
+  {mode:'fill',typeLabel:'Complete a frase',skill:'vocab',promptPre:'I am very',blank:'motivated',promptPost:'to join your company.',answer:'motivated',hint:'Estou muito ___ para entrar na sua empresa.'},
+  {mode:'story',typeLabel:'Leia a mini-história',skill:'listening',
+   text:'Before the [interview|interview], Maria prepared her [answers|answers] carefully. She researched the [company|company] and wore professional [clothes|clothes]. She arrived [early|early] and greeted everyone with a [smile|smile].',
+   question:'O que Maria fez antes da entrevista?',answer:'She prepared her answers and researched the company.',options:['She slept all day.','She prepared her answers and researched the company.','She called a friend.','She read a book.']},
+  {mode:'shadowing',typeLabel:'Shadowing',skill:'speaking',phrase:'I am a team player and I always look for ways to improve my skills.',translation:'Sou uma pessoa de equipe e sempre busco formas de melhorar minhas habilidades.'},
+  {mode:'reorder',typeLabel:'Ordene as palavras',skill:'grammar',sentence:'I believe I am the right person for this position.',words:['position.','I','right','believe','this','I','for','the','person','am']}
+ ]},
+ {id:34,name:"Gírias e Informal",icon:"😎",skills:{vocab:4,grammar:1,listening:2,speaking:1},questions:[
+  {mode:'story',typeLabel:'Leia a mini-história',skill:'listening',
+   text:"Hey! Whats up? Tom was [chilling|chilling] at home when his friend texted: Wanna hang out? Tom replied Sure, Im [down|down] for it! They decided to [grab|grab] a bite and [catch up|catch up] on everything.",
+   question:'O que Tom e seu amigo decidiram fazer?',answer:'Grab a bite and catch up.',options:['Stay home.','Go to work.','Grab a bite and catch up.','Watch a movie.']},
+  {mode:'match',typeLabel:'Gíria → Significado',skill:'vocab',pairs:[['chill','relaxar'],['hang out','sair/passar tempo'],['gonna','going to'],['wanna','want to']]},
+  {mode:'mcq',typeLabel:'O que significa?',skill:'vocab',prompt:'"That test was a piece of cake!"',answer:'A prova foi muito fácil.',options:['A prova foi difícil.','A prova foi muito fácil.','A prova era sobre bolo.','A prova foi cancelada.']},
+  {mode:'build',typeLabel:'Monte a frase informal',skill:'vocab',promptPT:'Vou passar na sua casa mais tarde.',words:["I'm",'gonna','swing','by','your','place','later','.'],answer:"I'm gonna swing by your place later ."},
+  {mode:'fill',typeLabel:'Complete a frase',skill:'vocab',promptPre:'She was so',blank:'pumped',promptPost:'about the concert!',answer:'pumped',hint:'Ela estava tão ___ (animada) com o show!'},
+  {mode:'mcq',typeLabel:'Qual é mais informal?',skill:'vocab',prompt:'Como dizer "Estou ocupado" informalmente?',answer:"I'm swamped.",options:["I am very busy.","I'm swamped.","I have many tasks.","I cannot talk now."]},
+  {mode:'shadowing',typeLabel:'Shadowing',skill:'speaking',phrase:"What's up? I'm just chilling. Wanna grab some food later?",translation:'E aí? Tô relaxando. Quer pegar uma comida mais tarde?'},
+  {mode:'reorder',typeLabel:'Ordene as palavras',skill:'grammar',sentence:"Im gonna catch up with some friends tonight.",words:["tonight.","Im","some","gonna","with","friends","catch","up"]}
+ ]},
+ {id:35,name:"Saúde Mental",icon:"🧘",skills:{vocab:4,grammar:2,listening:2,speaking:2},questions:[
+  {mode:'story',typeLabel:'Leia a mini-história',skill:'listening',
+   text:'Ana had been feeling [stressed|stressed] for weeks. Her therapist suggested she try [meditation|meditation] and exercise. She also started [journaling|journaling] every night. Gradually she felt more [balanced|balanced] and [positive|positive].',
+   question:'O que o terapeuta sugeriu?',answer:'Meditation and exercise.',options:['More work.','Medication only.','Meditation and exercise.','A long vacation.']},
+  {mode:'match',typeLabel:'Vocabulário de bem-estar',skill:'vocab',pairs:[['anxious','ansioso(a)'],['overwhelmed','sobrecarregado(a)'],['resilient','resiliente'],['mindfulness','atenção plena']]},
+  {mode:'mcq',typeLabel:'Como se diz?',skill:'vocab',prompt:'Estou me sentindo sobrecarregado com o trabalho.',answer:'I am feeling overwhelmed with work.',options:['I am very busy.','I am feeling overwhelmed with work.','I have too much to do.','I am stressed out a bit.']},
+  {mode:'build',typeLabel:'Monte a frase',skill:'grammar',promptPT:'É importante cuidar da sua saúde mental.',words:['It','is','important','to','take','care','of','your','mental','health','.'],answer:'It is important to take care of your mental health .'},
+  {mode:'fill',typeLabel:'Complete a frase',skill:'vocab',promptPre:'Talking to someone you trust can help you',blank:'cope',promptPost:'with stress.',answer:'cope',hint:'Falar com alguém de confiança ajuda a ___ com o estresse.'},
+  {mode:'dialogue',typeLabel:'Leia o diálogo',skill:'listening',
+   lines:[{who:'👩',en:'I have been feeling really burned out lately.',pt:'Tenho me sentido muito esgotada ultimamente.'},
+          {who:'👨',en:'I understand. Have you tried setting boundaries at work?',pt:'Entendo. Você tentou estabelecer limites no trabalho?'},
+          {who:'👩',en:'Not really. I feel guilty saying no.',pt:'Não muito. Me sinto culpada em dizer não.'},
+          {who:'👨',en:'Setting boundaries is an act of self-care, not selfishness.',pt:'Estabelecer limites é um ato de autocuidado, não egoísmo.'}],
+   question:'O que o homem aconselha?',answer:'Setting boundaries at work.',options:['Taking more vacations.','Setting boundaries at work.','Changing jobs.','Talking to a doctor.']},
+  {mode:'shadowing',typeLabel:'Shadowing',skill:'speaking',phrase:'Taking care of your mental health is just as important as your physical health.',translation:'Cuidar da sua saúde mental é tão importante quanto a saúde física.'},
+  {mode:'reorder',typeLabel:'Ordene as palavras',skill:'grammar',sentence:'I have been practicing mindfulness for a few months.',words:['months.','I','for','practicing','been','have','mindfulness','few','a']}
+ ]},
+ {id:36,name:"Tecnologia",icon:"💻",skills:{vocab:4,grammar:2,listening:2,speaking:1},questions:[
+  {mode:'story',typeLabel:'Leia a mini-história',skill:'listening',
+   text:'The new [software|software] update was released. Users had to [download|download] and [install|install] it. Some people had [compatibility|compatibility] issues with older devices. The support team [troubleshot|troubleshot] the problem and released a [patch|patch] quickly.',
+   question:'O que a equipe de suporte fez?',answer:'They troubleshot the problem and released a patch.',options:['They ignored the problem.','They troubleshot the problem and released a patch.','They released a new device.','They cancelled the update.']},
+  {mode:'match',typeLabel:'Vocabulário tech',skill:'vocab',pairs:[['bandwidth','largura de banda'],['firewall','firewall / barreira'],['backup','cópia de segurança'],['bug','erro de software']]},
+  {mode:'mcq',typeLabel:'Como se diz?',skill:'vocab',prompt:'Meu computador travou.',answer:'My computer crashed.',options:['My computer is slow.','My computer crashed.','My computer turned off.','My computer is broken.']},
+  {mode:'build',typeLabel:'Monte a frase',skill:'grammar',promptPT:'Você precisa atualizar seu software.',words:['You','need','to','update','your','software','.'],answer:'You need to update your software .'},
+  {mode:'fill',typeLabel:'Complete a frase',skill:'vocab',promptPre:'Please make sure you have a',blank:'backup',promptPost:'of all your files.',answer:'backup',hint:'Certifique-se de ter um ___ de todos os seus arquivos.'},
+  {mode:'dialogue',typeLabel:'Leia o diálogo',skill:'listening',
+   lines:[{who:'👩',en:'My laptop is running very slowly.',pt:'Meu notebook está rodando muito devagar.'},
+          {who:'👨',en:'Have you tried clearing the cache and running a virus scan?',pt:'Você tentou limpar o cache e fazer uma varredura de vírus?'},
+          {who:'👩',en:'No, how do I do that?',pt:'Não, como faço isso?'},
+          {who:'👨',en:'I can walk you through it step by step.',pt:'Posso te guiar passo a passo.'}],
+   question:'O que o homem oferece fazer?',answer:'Walk her through the process step by step.',options:['Fix her laptop.','Buy a new computer.','Walk her through the process step by step.','Call a technician.']},
+  {mode:'shadowing',typeLabel:'Shadowing',skill:'speaking',phrase:'Could you share your screen so I can help you troubleshoot the issue?',translation:'Você pode compartilhar sua tela para eu te ajudar a resolver o problema?'},
+  {mode:'reorder',typeLabel:'Ordene as palavras',skill:'grammar',sentence:'Make sure to save your work before updating the system.',words:['system.','Make','your','to','updating','sure','the','work','before','save']}
+ ]},
+ {id:37,name:"Meio Ambiente",icon:"🌱",skills:{vocab:4,grammar:2,listening:2,speaking:1},questions:[
+  {mode:'story',typeLabel:'Leia a mini-história',skill:'listening',
+   text:'Climate change is causing [rising|rising] temperatures worldwide. Scientists urge governments to [reduce|reduce] carbon [emissions|emissions]. Renewable energy sources like solar and [wind|wind] power are becoming more [affordable|affordable].',
+   question:'O que os cientistas pedem aos governos?',answer:'To reduce carbon emissions.',options:['To build more factories.','To reduce carbon emissions.','To stop renewable energy.','To increase oil production.']},
+  {mode:'match',typeLabel:'Vocabulário ambiental',skill:'vocab',pairs:[['recycle','reciclar'],['renewable','renovável'],['emissions','emissões'],['sustainable','sustentável']]},
+  {mode:'mcq',typeLabel:'Como se diz?',skill:'vocab',prompt:'Aquecimento global',answer:'Global warming',options:['World heating','Global warming','Earth fever','Planet burning']},
+  {mode:'build',typeLabel:'Monte a frase',skill:'grammar',promptPT:'Devemos reduzir o uso de plástico.',words:['We','should','reduce','our','use','of','plastic','.'],answer:'We should reduce our use of plastic .'},
+  {mode:'fill',typeLabel:'Complete a frase',skill:'vocab',promptPre:'Using public transport helps',blank:'reduce',promptPost:'pollution in cities.',answer:'reduce',hint:'Usar transporte público ajuda a ___ a poluição.'},
+  {mode:'dialogue',typeLabel:'Leia o diálogo',skill:'listening',
+   lines:[{who:'👩',en:'What can we do to help the environment?',pt:'O que podemos fazer para ajudar o meio ambiente?'},
+          {who:'👨',en:'Small things matter. Recycle, use less plastic, and save energy.',pt:'Pequenas coisas importam. Recicle, use menos plástico e economize energia.'},
+          {who:'👩',en:'What about transportation?',pt:'E o transporte?'},
+          {who:'👨',en:'Try to walk, cycle, or use public transport when possible.',pt:'Tente caminhar, andar de bicicleta ou usar transporte público quando possível.'}],
+   question:'O que o homem sugere sobre transporte?',answer:'Walk, cycle, or use public transport.',options:['Buy an electric car.','Walk, cycle, or use public transport.','Use a taxi.','Drive less at night.']},
+  {mode:'shadowing',typeLabel:'Shadowing',skill:'speaking',phrase:'We all have a responsibility to protect the environment for future generations.',translation:'Todos temos responsabilidade de proteger o meio ambiente para as futuras gerações.'},
+  {mode:'reorder',typeLabel:'Ordene as palavras',skill:'grammar',sentence:'Renewable energy is the key to a sustainable future.',words:['future.','Renewable','key','energy','sustainable','is','a','to','the']}
+ ]},
+ {id:38,name:"Cultura e Costumes",icon:"🌍",skills:{vocab:3,grammar:2,listening:3,speaking:2},questions:[
+  {mode:'story',typeLabel:'Leia a mini-história',skill:'listening',
+   text:'When visiting [another|another] country, it is important to respect local [customs|customs]. In Japan, you should [bow|bow] when greeting. In many Arab countries, you should dress [modestly|modestly]. Always [research|research] before you travel.',
+   question:'O que é importante fazer antes de viajar?',answer:'Research local customs.',options:['Pack light.','Research local customs.','Learn the language completely.','Bring lots of money.']},
+  {mode:'match',typeLabel:'Costumes ao redor do mundo',skill:'vocab',pairs:[['small talk','conversa informal'],['tipping','gorjeta'],['etiquette','etiqueta/protocolo'],['taboo','tabu']]},
+  {mode:'mcq',typeLabel:'O que é correto?',skill:'vocab',prompt:'Em uma reunião de negócios formal nos EUA, o que é importante?',answer:'A firm handshake and eye contact.',options:['A bow and silence.','A firm handshake and eye contact.','Bringing gifts.','Arriving late is acceptable.']},
+  {mode:'build',typeLabel:'Monte a frase',skill:'grammar',promptPT:'É educado tirar os sapatos ao entrar na casa.',words:['It','is','polite','to','remove','your','shoes','before','entering','the','house','.'],answer:'It is polite to remove your shoes before entering the house .'},
+  {mode:'fill',typeLabel:'Complete a frase',skill:'vocab',promptPre:'Understanding cultural differences helps avoid',blank:'misunderstandings',promptPost:'.',answer:'misunderstandings',hint:'Entender diferenças culturais evita ___.'},
+  {mode:'dialogue',typeLabel:'Leia o diálogo',skill:'listening',
+   lines:[{who:'👩',en:'I am nervous about my business trip to the US.',pt:'Estou nervosa com minha viagem de negócios para os EUA.'},
+          {who:'👨',en:'Americans are usually direct and value punctuality.',pt:'Os americanos geralmente são diretos e valorizam pontualidade.'},
+          {who:'👩',en:'What about small talk?',pt:'E sobre conversas informais?'},
+          {who:'👨',en:"It is very common. Topics like sports and weather are always safe.",pt:'É muito comum. Tópicos como esportes e clima são sempre seguros.'}],
+   question:'Quais tópicos são seguros para small talk?',answer:'Sports and weather.',options:['Politics and religion.','Sports and weather.','Money and salary.','Age and weight.']},
+  {mode:'shadowing',typeLabel:'Shadowing',skill:'speaking',phrase:'Being aware of cultural differences makes you a more effective communicator.',translation:'Estar ciente das diferenças culturais te torna um comunicador mais eficaz.'},
+  {mode:'reorder',typeLabel:'Ordene as palavras',skill:'grammar',sentence:'It is important to respect the customs of the country you are visiting.',words:['visiting.','It','customs','the','is','you','to','important','country','of','respect','the','are']}
+ ]},
+ {id:39,name:"Fluência Final",icon:"🏆",skills:{vocab:3,grammar:3,listening:2,speaking:4},questions:[
+  {mode:'story',typeLabel:'Leia a mini-história',skill:'listening',
+   text:'Becoming [fluent|fluent] in English takes time and [practice|practice]. The key is [consistency|consistency] — studying a little every day is better than long [irregular|irregular] sessions. Use English in [real|real] situations: watch movies, read books, and talk to people.',
+   question:'Qual é a chave para a fluência?',answer:'Consistency — studying every day.',options:['Studying for very long sessions.','Consistency — studying every day.','Memorizing grammar rules.','Watching only English movies.']},
+  {mode:'dialogue',typeLabel:'Conversa avançada',skill:'listening',
+   lines:[{who:'👩',en:'How long did it take you to become fluent in English?',pt:'Quanto tempo levou para você ficar fluente em inglês?'},
+          {who:'👨',en:'About three years of consistent practice. I made lots of mistakes at first.',pt:'Cerca de três anos de prática consistente. Cometi muitos erros no início.'},
+          {who:'👩',en:'What helped you the most?',pt:'O que mais te ajudou?'},
+          {who:'👨',en:'Speaking with native speakers and not being afraid of making mistakes.',pt:'Falar com nativos e não ter medo de cometer erros.'}],
+   question:'O que mais ajudou o homem a aprender?',answer:'Speaking with native speakers.',options:['Reading grammar books.','Speaking with native speakers.','Taking formal classes.','Watching TV only.']},
+  {mode:'match',typeLabel:'Estratégias de fluência',skill:'vocab',pairs:[['immersion','imersão'],['shadowing','sombra / imitar'],['consistency','consistência'],['exposure','exposição']]},
+  {mode:'mcq',typeLabel:'Como um fluente responderia?',skill:'vocab',prompt:'"Could you elaborate on that?"',answer:'Certamente! O que você gostaria de saber?',options:['O quê?','Não entendi.','Certamente! O que você gostaria de saber?','Repete por favor.']},
+  {mode:'build',typeLabel:'Monte a frase',skill:'grammar',promptPT:'Quanto mais você praticar, mais confiante você ficará.',words:['The','more','you','practice',',','the','more','confident','you','will','become','.'],answer:'The more you practice , the more confident you will become .'},
+  {mode:'fill',typeLabel:'Complete a frase',skill:'vocab',promptPre:'Do not be afraid of making',blank:'mistakes',promptPost:'— they are part of learning.',answer:'mistakes',hint:'Não tenha medo de cometer ___ — fazem parte do aprendizado.'},
+  {mode:'shadowing',typeLabel:'Shadowing',skill:'speaking',phrase:'The key to fluency is consistent daily practice and not being afraid to make mistakes.',translation:'A chave para a fluência é prática diária consistente e não ter medo de errar.'},
+  {mode:'reorder',typeLabel:'Ordene as palavras',skill:'grammar',sentence:'Practice makes perfect so never stop learning.',words:['learning.','Practice','stop','makes','never','so','perfect']}
+ ]}
+];
+
+
+// ── DICTATION BANK ──
+const DICTATION_PHRASES = [
+  // Beginner
+  {text:"Hello, how are you today?", pt:"Olá, como vai você hoje?", level:1},
+  {text:"My name is Sara and I am from Brazil.", pt:"Meu nome é Sara e sou do Brasil.", level:1},
+  {text:"I would like a coffee, please.", pt:"Eu gostaria de um café, por favor.", level:1},
+  {text:"Where is the nearest hospital?", pt:"Onde fica o hospital mais próximo?", level:1},
+  {text:"How much does this cost?", pt:"Quanto custa isso?", level:1},
+  {text:"I am very happy to meet you.", pt:"Estou muito feliz em te conhecer.", level:1},
+  {text:"The weather is beautiful today.", pt:"O tempo está lindo hoje.", level:1},
+  {text:"Can you help me please?", pt:"Você pode me ajudar, por favor?", level:1},
+  // Intermediate
+  {text:"I have been studying English for two years.", pt:"Estou estudando inglês há dois anos.", level:2},
+  {text:"She told me that she would call me back.", pt:"Ela me disse que me ligaria de volta.", level:2},
+  {text:"If it rains tomorrow, we will stay home.", pt:"Se chover amanhã, ficaremos em casa.", level:2},
+  {text:"Could you repeat that more slowly, please?", pt:"Poderia repetir isso mais devagar, por favor?", level:2},
+  {text:"The meeting has been postponed until next week.", pt:"A reunião foi adiada para a próxima semana.", level:2},
+  {text:"I would appreciate it if you could send me the report.", pt:"Ficaria grato se você pudesse me enviar o relatório.", level:2},
+  {text:"She has already finished all her assignments.", pt:"Ela já terminou todas as suas tarefas.", level:2},
+  // Advanced
+  {text:"Despite the challenges, the team managed to deliver the project on time.", pt:"Apesar dos desafios, a equipe conseguiu entregar o projeto no prazo.", level:3},
+  {text:"The consequences of climate change are becoming increasingly apparent.", pt:"As consequências das mudanças climáticas estão se tornando cada vez mais evidentes.", level:3},
+  {text:"I strongly believe that consistency is the key to becoming fluent.", pt:"Acredito fortemente que a consistência é a chave para a fluência.", level:3},
 ];
 
 // Shadowing phrases bank
@@ -2033,57 +2272,78 @@ async function shadowRecord2(){
     shadowMR2=new MediaRecorder(stream);shadowAC2=[];
     shadowMR2.ondataavailable=e=>shadowAC2.push(e.data);
     shadowMR2.onstop=()=>processShadow2(stream,shadowingPhrases[state.shadowIdx].phrase);
-    shadowMR2.start();btn.classList.add('recording');btn.textContent='⏹ Parar';
-    setTimeout(()=>{if(shadowMR2?.state==='recording') shadowMR2.stop();},6000);
+    shadowMR2.start();
+    btn.classList.add('recording');btn.textContent='⏹ Parar gravação';
+
+    // Start Speech Recognition SIMULTANEOUSLY (not after stop)
+    // This is key for Android Chrome — SR needs to start while mic is active
+    if(('webkitSpeechRecognition' in window)||('SpeechRecognition' in window)){
+      const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+      const rec=new SR();
+      rec.lang='en-US';rec.interimResults=false;rec.maxAlternatives=5;
+      rec.continuous=false;
+      state._shadowRec2=rec;
+      state._shadowRec2Result=null;
+      rec.onresult=e=>{
+        state._shadowRec2Result=e.results[0][0].transcript.toLowerCase().trim();
+      };
+      rec.onerror=()=>{ state._shadowRec2Result=''; };
+      try{ rec.start(); }catch(e){}
+    }
+
+    setTimeout(()=>{if(shadowMR2?.state==='recording') shadowMR2.stop();},5000);
   }catch(e){
     const fb=document.getElementById('shadowFeedback2');
     fb.className='shadow-feedback show bad';
-    fb.textContent=e.name==='NotAllowedError'?'⚠️ Permissão negada. Permita o microfone no navegador.':'⚠️ Microfone indisponível neste contexto.';
+    fb.textContent=e.name==='NotAllowedError'?'⚠️ Permissão negada.':'⚠️ Microfone indisponível.';
   }
 }
 
 function processShadow2(stream,target){
   const btn=document.getElementById('shadowMicBtn2');
-  btn.classList.remove('recording');btn.textContent='⏳ Analisando...';btn.disabled=true;
+  btn.classList.remove('recording');btn.textContent='⏳ Processando...';btn.disabled=true;
   stream.getTracks().forEach(t=>t.stop());
 
-  // Always create audio URL from recording
+  // Stop any running SR
+  try{ state._shadowRec2?.stop(); }catch(e){}
+
+  // Always create audio playback URL
   const blob=new Blob(shadowAC2,{type:'audio/webm'});
   const audioUrl=URL.createObjectURL(blob);
 
-  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){
-    const fb=document.getElementById('shadowFeedback2');
-    fb.className='shadow-feedback show ok';
-    fb.innerHTML=`
-      <div style="font-weight:800;margin-bottom:6px">🎧 Ouça sua gravação e compare:</div>
-      <audio controls src="${audioUrl}" style="width:100%;border-radius:8px;margin-bottom:8px"></audio>
-      <div style="font-size:12px;color:var(--gray-600)">Compare com o modelo — toque em 🔊 Ouvir para ouvir novamente.</div>`;
-    document.getElementById('ss2').className='shadow-step done';
-    document.getElementById('ss3').className='shadow-step done';
-    btn.disabled=false;btn.textContent='🎤 Repetir';return;
+  // If SR already captured result, use it immediately
+  if(state._shadowRec2Result!==null && state._shadowRec2Result!==undefined){
+    const best=state._shadowRec2Result;
+    if(best && best.length>0){
+      const score=calcSimilarity(best,target.toLowerCase());
+      showShadow2Result(audioUrl,'result',best,score);
+    } else {
+      showShadow2Result(audioUrl,'nomatch');
+    }
+    state._shadowRec2Result=null;
+    return;
   }
 
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  const rec=new SR();rec.lang='en-US';rec.interimResults=false;rec.maxAlternatives=3;
-  rec.onresult=e=>{
-    const best=e.results[0][0].transcript.toLowerCase().trim();
-    const score=calcSimilarity(best,target.toLowerCase());
-    showShadow2Result(audioUrl,'result',best,score);
-  };
-  rec.onerror=()=>showShadow2Result(audioUrl,'erro');
-  rec.onnomatch=()=>showShadow2Result(audioUrl,'nomatch');
-  rec.onend=()=>{
-    // If still showing "analisando" after recognition ends, show audio fallback
-    const btn2=document.getElementById('shadowMicBtn2');
-    if(btn2&&btn2.textContent.includes('Analisando')) showShadow2Result(audioUrl,'nomatch');
-  };
-  rec.start();
-  // Safety timeout — if nothing happens in 6s, show fallback
-  setTimeout(()=>{
-    try{rec.stop();}catch(e){}
-    const btn2=document.getElementById('shadowMicBtn2');
-    if(btn2&&btn2.textContent.includes('Analisando')) showShadow2Result(audioUrl,'nomatch');
-  },6000);
+  // SR not ready yet — wait up to 4s for result
+  let waited=0;
+  const wait=setInterval(()=>{
+    waited+=200;
+    if(state._shadowRec2Result!==null && state._shadowRec2Result!==undefined){
+      clearInterval(wait);
+      const best=state._shadowRec2Result||'';
+      state._shadowRec2Result=null;
+      if(best.length>0){
+        const score=calcSimilarity(best,target.toLowerCase());
+        showShadow2Result(audioUrl,'result',best,score);
+      } else {
+        showShadow2Result(audioUrl,'nomatch');
+      }
+    } else if(waited>=4000){
+      clearInterval(wait);
+      state._shadowRec2Result=null;
+      showShadow2Result(audioUrl,'nomatch');
+    }
+  },200);
 }
 
 function showShadow2Result(audioUrl, type, best, score){
@@ -2185,9 +2445,15 @@ function renderPronunWord(){
       <div class="pronun-syllables">${sylHTML}</div>
       <div class="pronun-phonetic">${w.phonetic}</div>
       <div class="pronun-translation">🇧🇷 ${w.translation}</div>
-      <div class="pronun-speed-row">
-        <button class="pronun-listen-btn" id="listenBtn" onclick="pronunListen(0.7)">🐢 Devagar</button>
-        <button class="pronun-listen-btn" id="listenBtn2" onclick="pronunListen(1.0)">🔊 Normal</button>
+      <div class="pronun-speed-row" style="flex-direction:column;gap:8px;width:100%">
+        <div class="audio-speed-wrap" style="justify-content:center">
+          <div class="audio-speed-label">Velocidade:</div>
+          <button class="spd-btn" onclick="setGlobalSpeed(0.5);pronunListen(0.5)">0.5x</button>
+          <button class="spd-btn" onclick="setGlobalSpeed(0.75);pronunListen(0.75)">0.75x</button>
+          <button class="spd-btn active" onclick="setGlobalSpeed(1.0);pronunListen(1.0)">1.0x</button>
+          <button class="spd-btn" onclick="setGlobalSpeed(1.25);pronunListen(1.25)">1.25x</button>
+        </div>
+        <button class="pronun-listen-btn" id="listenBtn" onclick="pronunListen()" style="align-self:center">🔊 Ouvir pronúncia</button>
       </div>
     </div>
 
@@ -2227,7 +2493,7 @@ function pronunManualRate(level){
 
 function pronunNav(dir){state.pronunIdx=Math.max(0,Math.min(pronunWords.length-1,state.pronunIdx+dir));TTS.synth.cancel();renderPronunWord();}
 
-function pronunListen(rate=0.7){
+function pronunListen(rate){rate=rate!==undefined?rate:globalAudioSpeed;
   const w=pronunWords[state.pronunIdx];
   const btnId=rate<0.9?'listenBtn':'listenBtn2';
   const btn=document.getElementById(btnId);
@@ -3057,6 +3323,804 @@ function showErrorReview(errors) {
   }).join('');
 }
 
+
+
+// ═══════════════════════════════════════════════
+//  CONVERSATION MODE
+// ═══════════════════════════════════════════════
+const CONV_TOPICS = [
+  {id:'intro', icon:'👋', name:'Apresentações', desc:'Se apresentar e conhecer pessoas',
+   turns:[
+     {app:"Hi! I'm Alex. What's your name?", pt:"Oi! Sou Alex. Qual é seu nome?",
+      suggestions:["My name is...", "I'm...", "Nice to meet you, I'm..."],
+      expect:'name', feedback:'Great! Nice to meet you too!'},
+     {app:"Where are you from?", pt:"De onde você é?",
+      suggestions:["I'm from Brazil.", "I'm Brazilian.", "I come from São Paulo."],
+      expect:'from', feedback:'Oh nice! Brazil is beautiful!'},
+     {app:"What do you do for a living?", pt:"O que você faz da vida?",
+      suggestions:["I work as a...", "I'm a student.", "I'm a teacher/engineer/manager."],
+      expect:'work', feedback:"That's interesting! How long have you been doing that?"},
+     {app:"It was great meeting you! Hope to chat again soon.", pt:"Foi ótimo te conhecer! Espero conversar de novo em breve.",
+      suggestions:["Nice to meet you too!", "Same here!", "Likewise! See you!"],
+      expect:'nice', feedback:'Excellent conversation! You did great! 🌟'}
+   ]},
+  {id:'cafe', icon:'☕', name:'No Café', desc:'Pedir bebidas e comida',
+   turns:[
+     {app:"Welcome! What can I get for you today?", pt:"Bem-vindo! O que posso te servir hoje?",
+      suggestions:["I'd like a coffee, please.", "Can I have a latte?", "One espresso, please."],
+      expect:'coffee', feedback:"Great choice! Any size preference?"},
+     {app:"What size would you like? Small, medium, or large?", pt:"Qual tamanho você prefere? Pequeno, médio ou grande?",
+      suggestions:["Medium, please.", "Large, please.", "A small one is fine."],
+      expect:'size', feedback:'Good! Would you like anything to eat with that?'},
+     {app:"Can I get your name for the order?", pt:"Posso pegar seu nome para o pedido?",
+      suggestions:["Sure, it's...", "My name is...", "Just put..."],
+      expect:'name', feedback:"Perfect! That'll be ready in a few minutes."},
+     {app:"Here's your order! Enjoy!", pt:"Aqui está seu pedido! Aproveite!",
+      suggestions:["Thank you!", "Thanks so much!", "Perfect, thank you!"],
+      expect:'thanks', feedback:"Well done! You ordered perfectly in English! ☕"}
+   ]},
+  {id:'interview', icon:'💼', name:'Entrevista', desc:'Praticar uma entrevista de emprego',
+   turns:[
+     {app:"Good morning! Please have a seat. Can you tell me about yourself?", pt:"Bom dia! Por favor sente-se. Pode me falar sobre você?",
+      suggestions:["I have X years of experience in...", "I'm a professional with...", "My background is in..."],
+      expect:'experience', feedback:"Excellent introduction! Now, "},
+     {app:"What are your main strengths?", pt:"Quais são seus principais pontos fortes?",
+      suggestions:["I am very organized.", "I work well under pressure.", "I am a good team player."],
+      expect:'strength', feedback:'Good answer! Those are valuable skills.'},
+     {app:"Where do you see yourself in 5 years?", pt:"Onde você se vê em 5 anos?",
+      suggestions:["I see myself growing within the company.", "I want to be in a leadership role.", "I hope to have developed my skills further."],
+      expect:'future', feedback:"That shows great ambition!"},
+     {app:"Do you have any questions for us?", pt:"Você tem alguma pergunta para nós?",
+      suggestions:["What are the growth opportunities?", "What does a typical day look like?", "How would you describe the team culture?"],
+      expect:'question', feedback:"Great question! That shows you are genuinely interested. Well done! 🎯"}
+   ]},
+  {id:'travel', icon:'✈️', name:'Viagem', desc:'Situações em viagens internacionais',
+   turns:[
+     {app:"Good evening! Welcome to the hotel. Do you have a reservation?", pt:"Boa noite! Bem-vindo ao hotel. Tem reserva?",
+      suggestions:["Yes, under the name...", "I booked a room for...", "Yes, I have a reservation."],
+      expect:'reservation', feedback:"Perfect! Let me pull up your reservation."},
+     {app:"Great! I have a double room for you. How many nights will you be staying?", pt:"Ótimo! Tenho um quarto duplo para você. Quantas noites vai ficar?",
+      suggestions:["Three nights, please.", "Just one night.", "For two nights."],
+      expect:'nights', feedback:'Wonderful! Breakfast is included and served from 7 to 10.'},
+     {app:"Is there anything else you need? Do you need help with your luggage?", pt:"Precisa de mais alguma coisa? Precisa de ajuda com a bagagem?",
+      suggestions:["No thanks, I'm fine.", "Yes please, that would be great.", "Could you also recommend a good restaurant?"],
+      expect:'help', feedback:"Of course! I'm happy to help."},
+     {app:"Have a wonderful stay! The elevator is just around the corner.", pt:"Tenha uma ótima estadia! O elevador fica logo ali na esquina.",
+      suggestions:["Thank you so much!", "Thanks, you too!", "Much appreciated!"],
+      expect:'thanks', feedback:"Perfect hotel check-in! You handled that like a pro! 🏨"}
+   ]}
+];
+
+let convState = {
+  topicId: null, turnIdx: 0, messages: [], recording: false
+};
+
+function openConversation() {
+  showScreen('convScreen');
+  renderConvTopics();
+}
+
+function renderConvTopics() {
+  const body = document.getElementById('convBody');
+  body.innerHTML = `
+    <div style="font-size:14px;font-weight:700;color:var(--gray-600);margin-bottom:4px">Escolha um tema para praticar:</div>
+    <div class="conv-topic-grid">
+      ${CONV_TOPICS.map(t=>`
+        <div class="conv-topic-card" onclick="startConv('${t.id}')">
+          <div class="conv-topic-icon">${t.icon}</div>
+          <div class="conv-topic-name">${t.name}</div>
+          <div class="conv-topic-desc">${t.desc}</div>
+        </div>`).join('')}
+    </div>
+    <div style="background:var(--gray-100);border-radius:14px;padding:13px;font-size:13px;font-weight:600;color:var(--gray-600)">
+      💡 O app fará perguntas em inglês. Responda digitando ou usando o microfone. Você receberá feedback imediato!
+    </div>`;
+}
+
+function startConv(topicId) {
+  const topic = CONV_TOPICS.find(t=>t.id===topicId);
+  if(!topic) return;
+  convState.topicId = topicId;
+  convState.turnIdx = 0;
+  convState.messages = [];
+  renderConvChat(topic);
+}
+
+function renderConvChat(topic) {
+  const body = document.getElementById('convBody');
+  const isSecure = location.protocol==='https:'||location.hostname==='localhost';
+
+  body.innerHTML = `
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:4px">
+      <button onclick="renderConvTopics()" style="background:none;border:none;font-size:13px;font-weight:800;color:var(--purple);cursor:pointer">← Temas</button>
+      <span style="font-size:14px;font-weight:800;color:var(--text)">${topic.icon} ${topic.name}</span>
+    </div>
+    <div class="conv-chat" id="convChat"></div>
+    <div class="conv-input-area">
+      <div class="conv-suggestions" id="convSuggestions"></div>
+      <div class="conv-input-row">
+        <input class="conv-text-input" id="convInput" placeholder="Digite em inglês..." 
+          onkeydown="if(event.key==='Enter')sendConvMsg()">
+        ${isSecure?`<button class="conv-mic-btn" id="convMicBtn" onclick="convRecord()">🎤</button>`:''}
+        <button class="conv-send-btn" onclick="sendConvMsg()">➤</button>
+      </div>
+      <div class="conv-score" id="convScore" style="display:none"></div>
+    </div>`;
+
+  // Show first app message
+  setTimeout(()=>appendConvMsg('app', topic),300);
+}
+
+function appendConvMsg(who, topic) {
+  const chat = document.getElementById('convChat');
+  const sugg = document.getElementById('convSuggestions');
+  if(!chat) return;
+  const turn = topic.turns[convState.turnIdx];
+  if(!turn) return;
+
+  if(who==='app') {
+    const msg = document.createElement('div');
+    msg.className = 'conv-msg app';
+    msg.innerHTML = `
+      <div class="conv-bubble">${turn.app}</div>
+      <div class="conv-translation">${turn.pt}</div>`;
+    chat.appendChild(msg);
+    chat.scrollTop = chat.scrollHeight;
+
+    // Speak
+    setTimeout(()=>TTS.speak(turn.app), 200);
+
+    // Show suggestions
+    if(sugg) {
+      sugg.innerHTML = turn.suggestions.map(s=>
+        `<div class="conv-suggestion" onclick="convUseSuggestion('${esc(s)}')">${s}</div>`
+      ).join('');
+    }
+  }
+}
+
+function convUseSuggestion(text) {
+  const input = document.getElementById('convInput');
+  if(input) { input.value = text; input.focus(); }
+}
+
+function sendConvMsg(text) {
+  const input = document.getElementById('convInput');
+  const msg = text || (input ? input.value.trim() : '');
+  if(!msg) return;
+  if(input) input.value = '';
+
+  const topic = CONV_TOPICS.find(t=>t.id===convState.topicId);
+  if(!topic) return;
+  const turn = topic.turns[convState.turnIdx];
+
+  const chat = document.getElementById('convChat');
+  const userMsg = document.createElement('div');
+  userMsg.className = 'conv-msg user';
+  userMsg.innerHTML = `<div class="conv-bubble">${escHTML(msg)}</div>`;
+  chat.appendChild(userMsg);
+  chat.scrollTop = chat.scrollHeight;
+
+  // Score the response
+  const score = calcSimilarity(msg.toLowerCase(), turn.suggestions.map(s=>s.toLowerCase()).join(' '));
+  const scoreEl = document.getElementById('convScore');
+  if(scoreEl) {
+    scoreEl.style.display = 'flex';
+    const col = score>=60?'var(--green)':score>=35?'var(--orange)':'var(--red)';
+    scoreEl.innerHTML = `<span style="color:${col};font-weight:800">${score>=60?'✅':'💪'}</span> Similaridade: <strong style="color:${col}">${score}%</strong> com a resposta esperada`;
+  }
+  SFX[score>=50?'correct':'click']();
+
+  // Feedback bubble then next turn
+  setTimeout(()=>{
+    const fbMsg = document.createElement('div');
+    fbMsg.className = 'conv-msg app';
+    fbMsg.innerHTML = `<div class="conv-bubble" style="background:#E8F5E9;color:#1B5E20">${turn.feedback}</div>`;
+    chat.appendChild(fbMsg);
+    chat.scrollTop = chat.scrollHeight;
+    TTS.speak(turn.feedback);
+
+    convState.turnIdx++;
+    if(convState.turnIdx < topic.turns.length) {
+      setTimeout(()=>appendConvMsg('app', topic), 1200);
+    } else {
+      setTimeout(()=>{
+        const doneMsg = document.createElement('div');
+        doneMsg.className = 'conv-msg app';
+        doneMsg.innerHTML = `<div class="conv-bubble" style="background:linear-gradient(135deg,var(--purple-light),#F3F0FF);color:var(--purple)">
+          <strong>🎉 Conversa concluída!</strong><br>Você praticou ${topic.turns.length} turnos em inglês! Incrível!</div>`;
+        chat.appendChild(doneMsg);
+        chat.scrollTop = chat.scrollHeight;
+        SFX.finish(); launchConfetti();
+        state.xp += 30; state.lessonData.xp = state.xp;
+        localStorage.setItem('linguaflash', JSON.stringify(state.lessonData));
+        showXPPopup('+30 XP ⚡');
+        document.getElementById('convScore').style.display='none';
+        // Add try again button
+        const inputArea = document.querySelector('.conv-input-area');
+        if(inputArea) inputArea.innerHTML = `<button class="check-btn" onclick="startConv('${topic.id}')">🔄 Praticar novamente</button>`;
+      }, 1200);
+    }
+  }, 800);
+}
+
+let convRec=null, convAC=[];
+async function convRecord() {
+  const btn = document.getElementById('convMicBtn');
+  if(convRec && convRec.state==='recording') { convRec.stop(); return; }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    convRec = new MediaRecorder(stream); convAC = [];
+    convRec.ondataavailable = e=>convAC.push(e.data);
+    convRec.onstop = () => {
+      stream.getTracks().forEach(t=>t.stop());
+      btn.classList.remove('recording'); btn.textContent='🎤';
+      if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)) return;
+      const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+      const rec=new SR(); rec.lang='en-US'; rec.interimResults=false;
+      rec.onresult=e=>sendConvMsg(e.results[0][0].transcript);
+      rec.onerror=()=>{};
+      rec.start(); setTimeout(()=>{try{rec.stop();}catch(e){}},4000);
+    };
+    convRec.start(); btn.classList.add('recording'); btn.textContent='⏹';
+    setTimeout(()=>{if(convRec?.state==='recording') convRec.stop();},8000);
+  } catch(e) { console.log('Mic error',e); }
+}
+
+// ═══════════════════════════════════════════════
+//  SHARE PROGRESS
+// ═══════════════════════════════════════════════
+function openShare() {
+  const lv = getLevel(state.xp);
+  const lvPct = getLevelProgress(state.xp);
+  const earned = Badges.earned();
+  const earnedBadges = BADGE_DEFS.filter(b=>earned[b.id]).slice(0,6);
+  const completed = state.lessonData.completed?.length||0;
+
+  const overlay = document.createElement('div');
+  overlay.className = 'share-overlay';
+  overlay.id = 'shareOverlay';
+  overlay.onclick = e=>{ if(e.target===overlay) closeShare(); };
+
+  const shareText = `🇺🇸 FalaJá — Aprendendo inglês!\n\n` +
+    `📊 Nível: ${lv.icon} ${lv.name}\n` +
+    `⚡ ${state.xp} XP | 🔥 ${state.streak} dias\n` +
+    `📚 ${completed} lições | 🧠 ${SRS.totalCards()} cards\n` +
+    `🏆 ${Badges.count()} conquistas\n\n` +
+    `Aprenda inglês grátis: https://fransoares8849-afk.github.io/LinguaFlash`;
+
+  overlay.innerHTML = `
+    <div class="share-modal">
+      <div class="share-card" id="shareCard">
+        <div class="share-app-name">💬 FalaJá</div>
+        <div class="share-level-badge">${lv.icon} ${lv.name}</div>
+        <div style="background:rgba(255,255,255,.2);border-radius:20px;height:8px;overflow:hidden;width:100%">
+          <div style="height:100%;width:${lvPct}%;background:#FFF;border-radius:20px"></div>
+        </div>
+        <div class="share-stats-grid">
+          <div class="share-stat"><div class="share-stat-val">⚡${state.xp}</div><div class="share-stat-lbl">XP Total</div></div>
+          <div class="share-stat"><div class="share-stat-val">🔥${state.streak}</div><div class="share-stat-lbl">Dias</div></div>
+          <div class="share-stat"><div class="share-stat-val">📚${completed}</div><div class="share-stat-lbl">Lições</div></div>
+          <div class="share-stat"><div class="share-stat-val">🧠${SRS.totalCards()}</div><div class="share-stat-lbl">Cards</div></div>
+          <div class="share-stat"><div class="share-stat-val">🏆${Badges.count()}</div><div class="share-stat-lbl">Badges</div></div>
+          <div class="share-stat"><div class="share-stat-val">📝${Notes.count()}</div><div class="share-stat-lbl">Notas</div></div>
+        </div>
+        ${earnedBadges.length>0?`<div class="share-badges-row">${earnedBadges.map(b=>`<div class="share-badge-chip">${b.icon} ${b.name}</div>`).join('')}</div>`:''}
+        <div class="share-url">fransoares8849-afk.github.io/LinguaFlash</div>
+      </div>
+      <div class="share-actions">
+        <button class="share-btn share-wa-btn" onclick="shareWhatsApp()">
+          📱 Compartilhar no WhatsApp
+        </button>
+        <button class="share-btn share-copy-btn" onclick="copyShareText()">
+          📋 Copiar texto
+        </button>
+        <button class="share-btn share-close-btn" onclick="closeShare()">
+          Fechar
+        </button>
+      </div>
+    </div>`;
+
+  overlay._shareText = shareText;
+  document.body.appendChild(overlay);
+}
+
+function closeShare() {
+  document.getElementById('shareOverlay')?.remove();
+}
+
+function shareWhatsApp() {
+  const overlay = document.getElementById('shareOverlay');
+  const text = encodeURIComponent(overlay._shareText.replace(/\\n/g,'\n'));
+  window.open('https://wa.me/?text='+text,'_blank');
+}
+
+function copyShareText() {
+  const overlay = document.getElementById('shareOverlay');
+  const text = overlay._shareText.replace(/\\n/g,'\n');
+  if(navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(()=>{
+      const btn = overlay.querySelector('.share-copy-btn');
+      btn.textContent = '✅ Copiado!';
+      setTimeout(()=>btn.textContent='📋 Copiar texto',2000);
+    });
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = text; document.body.appendChild(ta);
+    ta.select(); document.execCommand('copy'); document.body.removeChild(ta);
+    const btn = overlay.querySelector('.share-copy-btn');
+    btn.textContent = '✅ Copiado!';
+    setTimeout(()=>btn.textContent='📋 Copiar texto',2000);
+  }
+}
+
+
+// ═══════════════════════════════════════════════
+//  DICTATION MODE
+// ═══════════════════════════════════════════════
+let dictState = {
+  idx: 0, speed: 0.85, revealed: false,
+  queue: []
+};
+
+function openDictation() {
+  // Shuffle phrases by level
+  const shuffled = [...DICTATION_PHRASES].sort(() => Math.random() - .5);
+  dictState.queue = shuffled;
+  dictState.idx = 0;
+  showScreen('dictationScreen');
+  renderDictationCard();
+}
+
+function renderDictationCard() {
+  const body = document.getElementById('dictationBody');
+  const phrase = dictState.queue[dictState.idx];
+  const total = dictState.queue.length;
+  const levelLabels = {1:'🟢 Iniciante', 2:'🟡 Intermediário', 3:'🔴 Avançado'};
+
+  body.innerHTML = `
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:4px">
+      <div style="flex:1;background:var(--gray-200);border-radius:20px;height:9px;overflow:hidden">
+        <div style="height:100%;width:${dictState.idx/total*100}%;background:var(--blue);border-radius:20px;transition:width .4s"></div>
+      </div>
+      <div style="font-size:11px;font-weight:800;color:var(--gray-600)">${dictState.idx+1}/${total}</div>
+    </div>
+
+    <div style="font-size:11px;font-weight:700;color:var(--gray-600);text-align:center">${levelLabels[phrase.level]||''}</div>
+
+    <div class="dictation-card">
+      <div class="dictation-phrase hidden" id="dictPhrase">${phrase.text}</div>
+      <div class="audio-speed-wrap" style="justify-content:center">
+        <div class="audio-speed-label">Velocidade:</div>
+        ${[0.5,0.75,1.0,1.25].map(s=>`
+          <button class="spd-btn${dictState.speed===s?' active':''}" onclick="setDictSpeed(${s})">${s}x</button>
+        `).join('')}
+      </div>
+      <button class="pronun-listen-btn" style="align-self:center" id="dictPlayBtn" onclick="playDictation()">
+        🔊 Ouvir frase
+      </button>
+      <div class="dictation-hint">💡 Tradução: <em>${phrase.pt}</em></div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <div style="font-size:13px;font-weight:800;color:var(--text)">Digite o que você ouviu:</div>
+      <input class="dictation-input" id="dictInput" type="text"
+        placeholder="Escreva em inglês..."
+        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+        onkeydown="if(event.key==='Enter')checkDictation()">
+      <div style="display:flex;gap:8px">
+        <button class="check-btn" style="flex:1" onclick="checkDictation()">VERIFICAR</button>
+        <button class="dictation-reveal" onclick="revealDictation()">👁️ Ver frase</button>
+      </div>
+      <div id="dictFeedback" style="display:none"></div>
+    </div>
+
+    <div style="display:flex;gap:8px;justify-content:center">
+      <button class="nav-btn" onclick="dictNav(-1)" ${dictState.idx===0?'disabled':''}>← Anterior</button>
+      <button class="nav-btn" onclick="dictNav(1)" ${dictState.idx===total-1?'disabled':''}>Próxima →</button>
+    </div>`;
+
+  setTimeout(()=>document.getElementById('dictInput')?.focus(), 100);
+}
+
+function setDictSpeed(s) {
+  dictState.speed = s;
+  document.querySelectorAll('.spd-btn').forEach(b=>{
+    b.classList.toggle('active', parseFloat(b.textContent)===s);
+  });
+}
+
+function playDictation() {
+  const phrase = dictState.queue[dictState.idx];
+  const btn = document.getElementById('dictPlayBtn');
+  btn.classList.add('speaking');
+  btn.innerHTML = `<div class="audio-wave"><span></span><span></span><span></span><span></span><span></span></div> Ouvindo...`;
+  const u = new SpeechSynthesisUtterance(phrase.text);
+  u.lang = 'en-US'; u.rate = dictState.speed;
+  if(TTS.voiceEN) u.voice = TTS.voiceEN;
+  u.onend = u.onerror = () => {
+    btn.classList.remove('speaking');
+    btn.innerHTML = '🔊 Ouvir frase';
+  };
+  TTS.synth.cancel(); TTS.synth.speak(u);
+}
+
+function revealDictation() {
+  const phraseEl = document.getElementById('dictPhrase');
+  if(phraseEl) { phraseEl.classList.remove('hidden'); dictState.revealed = true; }
+}
+
+function checkDictation() {
+  const input = document.getElementById('dictInput');
+  const fb = document.getElementById('dictFeedback');
+  if(!input || !fb) return;
+  const typed = input.value.trim().toLowerCase();
+  const correct = dictState.queue[dictState.idx].text.toLowerCase();
+  // Calculate similarity word by word
+  const typedWords = typed.split(/\s+/);
+  const correctWords = correct.replace(/[,.'!?]/g,'').split(/\s+/);
+  let matches = 0;
+  correctWords.forEach(w => { if(typedWords.includes(w)) matches++; });
+  const score = Math.round(matches / correctWords.length * 100);
+  const ok = score >= 80;
+
+  input.className = 'dictation-input ' + (ok ? 'correct' : 'wrong');
+  revealDictation(); // Always reveal after checking
+
+  fb.style.display = 'flex';
+  fb.style.cssText = `display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-radius:12px;background:${ok?'var(--green-light)':'var(--red-light)'};border:2px solid ${ok?'var(--green)':'var(--red)'}`;
+
+  // Word-by-word diff
+  const diffHTML = correctWords.map(w => {
+    const hit = typedWords.includes(w.replace(/[,.'!?]/g,''));
+    return `<span style="padding:2px 6px;border-radius:6px;font-weight:800;background:${hit?'var(--green)':'var(--red)'};color:#FFF;font-size:13px">${w}</span>`;
+  }).join(' ');
+
+  fb.innerHTML = `
+    <div style="font-size:14px;font-weight:800;color:${ok?'var(--green-dark)':'var(--red)'}">${ok?'✅ Excelente! '+score+'% correto!':'❌ '+score+'% — continue praticando!'}</div>
+    <div style="font-size:12px;font-weight:700;color:var(--gray-600)">Palavra por palavra:</div>
+    <div style="display:flex;flex-wrap:wrap;gap:4px">${diffHTML}</div>
+    ${!ok?`<div style="font-size:12px;font-weight:700;color:var(--gray-600)">Correto: <em>${dictState.queue[dictState.idx].text}</em></div>`:''}`;
+
+  if(ok) { SFX.correct(); showXPPopup('+15 XP ⚡'); state.xp+=5; }
+  else SFX.wrong();
+}
+
+function dictNav(dir) {
+  dictState.idx = Math.max(0, Math.min(dictState.queue.length-1, dictState.idx+dir));
+  dictState.revealed = false;
+  TTS.synth.cancel();
+  renderDictationCard();
+}
+
+// ═══════════════════════════════════════════════
+//  SPEED CONTROL FOR ALL AUDIO
+// ═══════════════════════════════════════════════
+let globalAudioSpeed = 0.85;
+
+function renderSpeedControl(onChangeFn) {
+  return `<div class="audio-speed-wrap">
+    <div class="audio-speed-label">Vel:</div>
+    ${[0.5,0.75,1.0,1.25].map(s=>`
+      <button class="spd-btn${globalAudioSpeed===s?' active':''}"
+        onclick="${onChangeFn}(${s})">
+        ${s}x
+      </button>`).join('')}
+  </div>`;
+}
+
+function setGlobalSpeed(s) {
+  globalAudioSpeed = s;
+  document.querySelectorAll('.spd-btn').forEach(b=>{
+    b.classList.toggle('active', parseFloat(b.textContent)===s);
+  });
+}
+
+// ═══════════════════════════════════════════════
+//  RECALL SRS (forced recall before seeing answer)
+// ═══════════════════════════════════════════════
+let recallState = {
+  queue: [], idx: 0, answered: false,
+  session: {correct:0, wrong:0, shown:0}
+};
+
+function startRecallReview() {
+  const due = SRS.getDue(20);
+  if(due.length===0){ alert('Nenhum card pendente! Complete mais lições primeiro.'); return; }
+  recallState = { queue:due, idx:0, answered:false, session:{correct:0,wrong:0,shown:0} };
+  // Use existing review screen but with recall mode
+  showScreen('review');
+  renderRecallCard();
+}
+
+function renderRecallCard() {
+  const body = document.getElementById('reviewBody');
+  if(recallState.idx >= recallState.queue.length) {
+    renderRecallDone(body); return;
+  }
+  const card = recallState.queue[recallState.idx];
+  const total = recallState.queue.length;
+  const prog = Math.round(recallState.idx/total*100);
+  const isEnFront = isEnglish(card.front);
+
+  body.innerHTML = `
+    <div style="display:flex;align-items:center;gap:9px">
+      <div style="flex:1;background:var(--gray-200);border-radius:20px;height:9px;overflow:hidden">
+        <div style="height:100%;width:${prog}%;background:linear-gradient(90deg,var(--purple),#A855F7);border-radius:20px;transition:width .4s"></div>
+      </div>
+      <div style="font-size:11px;font-weight:800;color:var(--gray-600)">${recallState.idx}/${total}</div>
+    </div>
+    <div style="font-size:10px;font-weight:700;color:var(--gray-600);text-transform:uppercase;letter-spacing:1px">
+      ${lessons[card.lessonIdx]?.icon||'📚'} ${lessons[card.lessonIdx]?.name||'?'} · ✍️ Recall forçado
+    </div>
+
+    <div class="recall-card" id="recallCard">
+      <div class="recall-inner">
+        <div class="recall-front">
+          <div class="recall-word">${card.front}</div>
+          <div class="recall-hint">Escreva a resposta antes de ver</div>
+          ${isEnFront?`<button class="audio-btn" onclick="TTS.speak('${esc(card.front)}')" style="font-size:11px;padding:5px 11px">🔊 Ouvir</button>`:''}
+        </div>
+        <div class="recall-back">
+          <div class="recall-type-label">✅ Resposta</div>
+          <div class="recall-answer">${card.back}</div>
+          ${isEnglish(card.back)?`<button class="audio-btn" onclick="TTS.speak('${esc(card.back)}')" style="background:#059669;font-size:11px;padding:5px 11px">🔊 Ouvir</button>`:''}
+        </div>
+      </div>
+    </div>
+
+    <div id="recallInputArea">
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:8px">✍️ Escreva a resposta:</div>
+      <input class="recall-input" id="recallInput" type="text" placeholder="Digite em inglês..."
+        autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"
+        onkeydown="if(event.key==='Enter')checkRecall()">
+      <button class="recall-check-btn" onclick="checkRecall()" style="margin-top:10px;width:100%">
+        VERIFICAR RESPOSTA
+      </button>
+    </div>
+
+    <div id="recallRatingArea" style="display:none">
+      <div style="font-size:11px;font-weight:800;color:var(--gray-600);text-align:center;margin-bottom:7px">Acertou?</div>
+      <div class="rating-row">
+        <button class="rate-btn rate-hard" onclick="recallRate(0)"><span class="rate-icon">😓</span><span class="rate-label">Errei</span><span class="rate-interval">+1 dia</span></button>
+        <button class="rate-btn rate-ok" onclick="recallRate(1)"><span class="rate-icon">🤔</span><span class="rate-label">Quase</span><span class="rate-interval">+3 dias</span></button>
+        <button class="rate-btn rate-easy" onclick="recallRate(2)"><span class="rate-icon">😄</span><span class="rate-label">Acertei!</span><span class="rate-interval">+${Math.max(4,Math.round((SRS.load().find(c=>c.id===card.id)?.interval||1)*2.5))} dias</span></button>
+      </div>
+    </div>
+
+    <div class="srs-summary">
+      <h4>Sessão atual</h4>
+      <div class="srs-bars">
+        <div class="srs-bar-row"><div class="srs-bar-label">✅ Acertos</div><div class="srs-bar-track"><div class="srs-bar-fill" style="width:${pct(recallState.session.correct,recallState.idx)}%;background:var(--green)"></div></div><div class="srs-bar-count">${recallState.session.correct}</div></div>
+        <div class="srs-bar-row"><div class="srs-bar-label">❌ Erros</div><div class="srs-bar-track"><div class="srs-bar-fill" style="width:${pct(recallState.session.wrong,recallState.idx)}%;background:var(--red)"></div></div><div class="srs-bar-count">${recallState.session.wrong}</div></div>
+      </div>
+    </div>`;
+
+  recallState.answered = false;
+  setTimeout(()=>document.getElementById('recallInput')?.focus(),100);
+}
+
+function checkRecall() {
+  const input = document.getElementById('recallInput');
+  const card = recallState.queue[recallState.idx];
+  if(!input || recallState.answered) return;
+  recallState.answered = true;
+
+  const typed = input.value.trim().toLowerCase();
+  const correct = card.back.toLowerCase().replace(/[.!?]/g,'').trim();
+  const score = calcSimilarity(typed, correct);
+  const ok = score >= 60;
+
+  input.className = 'recall-input ' + (ok?'correct':'wrong');
+  input.disabled = true;
+
+  // Flip card to show answer
+  document.getElementById('recallCard')?.classList.add('flipped');
+  if(isEnglish(card.back)) setTimeout(()=>TTS.speak(card.back),500);
+
+  // Show correct/wrong indicator
+  const inputArea = document.getElementById('recallInputArea');
+  if(inputArea) {
+    const resultDiv = document.createElement('div');
+    resultDiv.style.cssText = `margin-top:8px;padding:8px 12px;border-radius:10px;font-size:12px;font-weight:700;background:${ok?'var(--green-light)':'var(--red-light)'};color:${ok?'var(--green-dark)':'var(--red)'}`;
+    resultDiv.textContent = ok ? `✅ Correto! (${score}% similar)` : `❌ Correto seria: "${card.back}"`;
+    inputArea.appendChild(resultDiv);
+  }
+
+  // Show rating
+  document.getElementById('recallRatingArea').style.display = 'block';
+  if(ok) { recallState.session.correct++; SFX.correct(); showXPPopup('+10 XP ⚡'); }
+  else { recallState.session.wrong++; SFX.wrong(); }
+}
+
+function recallRate(quality) {
+  const card = recallState.queue[recallState.idx];
+  SRS.review(card.id, quality);
+  if(quality>=1){ state.xp+=5; state.lessonData.xp=state.xp; localStorage.setItem('linguaflash',JSON.stringify(state.lessonData)); }
+  recallState.idx++;
+  renderRecallCard();
+}
+
+function renderRecallDone(body) {
+  const s = recallState.session;
+  SFX.finish();
+  body.innerHTML = `
+    <div class="session-done">
+      <div class="session-done-icon">🧠</div>
+      <h2>Recall concluído!</h2>
+      <p>Você treinou a memória ativa em <strong>${s.correct+s.wrong}</strong> cards!</p>
+      <div class="done-stats">
+        <div class="done-stat"><div class="done-stat-val" style="color:var(--green)">${s.correct}</div><div class="done-stat-lbl">✅ Acertos</div></div>
+        <div class="done-stat"><div class="done-stat-val" style="color:var(--red)">${s.wrong}</div><div class="done-stat-lbl">❌ Erros</div></div>
+        <div class="done-stat"><div class="done-stat-val" style="color:var(--blue)">${Math.round(s.correct/(s.correct+s.wrong||1)*100)}%</div><div class="done-stat-lbl">Precisão</div></div>
+      </div>
+    </div>
+    <div class="srs-summary"><h4>📊 Progresso geral</h4><div class="srs-bars">${renderGlobalStats()}</div></div>
+    <button class="check-btn" onclick="showScreen('home');renderHome()">VOLTAR</button>`;
+  launchConfetti();
+}
+
+// ═══════════════════════════════════════════════
+//  WEEKLY PLAN
+// ═══════════════════════════════════════════════
+const GOALS = [
+  {id:'casual',   icon:'🌱', name:'Casual',      desc:'5 min/dia — aprender no próprio ritmo',  xp:50},
+  {id:'regular',  icon:'📚', name:'Regular',     desc:'15 min/dia — progresso consistente',      xp:150},
+  {id:'serious',  icon:'🎯', name:'Sério',       desc:'30 min/dia — fluência mais rápida',       xp:300},
+  {id:'intense',  icon:'🚀', name:'Intensivo',   desc:'60 min/dia — imersão total',              xp:600},
+];
+
+const WeeklyPlan = {
+  _key: 'falaja_weekly',
+  load() { try{ return JSON.parse(localStorage.getItem(this._key)||'{"goalId":"regular","days":{}}'); }catch(e){return{goalId:'regular',days:{}};}},
+  save(d){ localStorage.setItem(this._key, JSON.stringify(d)); },
+  todayKey(){ return new Date().toISOString().split('T')[0]; },
+  checkIn(xp){
+    const d=this.load();
+    if(!d.days) d.days={};
+    const today=this.todayKey();
+    if(!d.days[today]) d.days[today]={xp:0,done:false};
+    d.days[today].xp=(d.days[today].xp||0)+xp;
+    const goal=GOALS.find(g=>g.id===d.goalId)||GOALS[1];
+    d.days[today].done=d.days[today].xp>=goal.xp;
+    this.save(d);
+  },
+  getLast7(){
+    const d=this.load();
+    const result=[];
+    const days=['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
+    for(let i=6;i>=0;i--){
+      const dt=new Date(); dt.setDate(dt.getDate()-i);
+      const key=dt.toISOString().split('T')[0];
+      const isToday=i===0;
+      result.push({
+        label:days[dt.getDay()],
+        key,
+        xp:d.days?.[key]?.xp||0,
+        done:d.days?.[key]?.done||false,
+        isToday
+      });
+    }
+    return result;
+  }
+};
+
+function openWeeklyPlan() {
+  showScreen('weeklyScreen');
+  renderWeeklyBody();
+}
+
+function renderWeeklyBody() {
+  const body = document.getElementById('weeklyBody');
+  const plan = WeeklyPlan.load();
+  const days7 = WeeklyPlan.getLast7();
+  const todayData = days7[6];
+  const goal = GOALS.find(g=>g.id===plan.goalId)||GOALS[1];
+  const todayPct = Math.min(100, Math.round((todayData.xp/goal.xp)*100));
+  const doneThisWeek = days7.filter(d=>d.done).length;
+
+  // Morning review cards
+  const due = SRS.countDue();
+  const morningCards = Math.min(5, due);
+
+  body.innerHTML = `
+    <!-- Today progress -->
+    <div class="chart-wrap">
+      <div class="chart-title">📅 Hoje — ${new Date().toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'})}</div>
+      <div class="progress-ring-wrap">
+        <div class="ring-stat">
+          <div class="ring-val" style="color:${todayPct>=100?'var(--green)':'var(--blue)'}">${todayData.xp}</div>
+          <div class="ring-lbl">XP hoje</div>
+        </div>
+        <div style="flex:1">
+          <div style="background:var(--gray-200);border-radius:20px;height:16px;overflow:hidden;margin-bottom:6px">
+            <div style="height:100%;width:${todayPct}%;background:${todayPct>=100?'var(--green)':'var(--blue)'};border-radius:20px;transition:width .8s cubic-bezier(.34,1.56,.64,1)"></div>
+          </div>
+          <div style="font-size:12px;font-weight:700;color:var(--gray-600)">${todayPct}% da meta diária (${goal.xp} XP)</div>
+        </div>
+        <div class="ring-stat">
+          <div class="ring-val" style="color:var(--yellow)">${doneThisWeek}</div>
+          <div class="ring-lbl">Dias ✅</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Week view -->
+    <div class="chart-wrap">
+      <div class="chart-title">📆 Semana atual</div>
+      <div class="week-grid">
+        ${days7.map(d=>`
+          <div class="week-day ${d.done?'done':d.isToday?'today':d.xp>0?'':''}">
+            <div class="week-day-name">${d.label}</div>
+            <div class="week-day-icon">${d.done?'✅':d.isToday?'👆':d.xp>0?'📖':'⬜'}</div>
+            <div class="week-day-xp">${d.xp>0?d.xp+' XP':'-'}</div>
+          </div>`).join('')}
+      </div>
+    </div>
+
+    <!-- Morning review -->
+    ${due>0?`
+    <div class="morning-card">
+      <div class="morning-title">☀️ Revisão Matinal</div>
+      <div class="morning-card-body">
+        Você tem <strong>${morningCards} card${morningCards>1?'s':''} urgente${morningCards>1?'s':''}</strong> para revisar agora.<br>
+        Fazer agora enquanto a memória ainda está fresca é 2x mais eficiente!
+      </div>
+      <button class="start-morning-btn" onclick="startRecallReview()">
+        🧠 Revisar ${morningCards} card${morningCards>1?'s':''} agora
+      </button>
+    </div>`:'<div class="morning-card"><div class="morning-title">✅ Em dia!</div><div class="morning-card-body">Nenhum card pendente no momento. Continue assim!</div></div>'}
+
+    <!-- Goal selector -->
+    <div style="font-size:13px;font-weight:800;color:var(--gray-600);text-transform:uppercase;letter-spacing:1px">Meta diária</div>
+    <div class="goal-selector">
+      ${GOALS.map(g=>`
+        <div class="goal-option${plan.goalId===g.id?' selected':''}" onclick="setGoal('${g.id}')">
+          <div class="goal-icon">${g.icon}</div>
+          <div>
+            <div class="goal-name">${g.name}</div>
+            <div class="goal-desc">${g.desc} — ${g.xp} XP/dia</div>
+          </div>
+          ${plan.goalId===g.id?'<div style="margin-left:auto;font-size:18px">✅</div>':''}
+        </div>`).join('')}
+    </div>`;
+}
+
+function setGoal(goalId) {
+  const plan = WeeklyPlan.load();
+  plan.goalId = goalId;
+  WeeklyPlan.save(plan);
+  renderWeeklyBody();
+  SFX.click();
+}
+
+// Hook WeeklyPlan into XP recording
+const _origRecordXP = StatsTracker.recordXP.bind(StatsTracker);
+StatsTracker.recordXP = function(xp) {
+  _origRecordXP(xp);
+  WeeklyPlan.checkIn(xp);
+};
+
+// ═══════════════════════════════════════════════
+//  SPEED CONTROL ON PRONUN SCREEN
+// ═══════════════════════════════════════════════
+// Override TTS.speak to use globalAudioSpeed when no explicit rate
+const _origSpeak = TTS.speak.bind(TTS);
+TTS.speak = function(text, btn, rate) {
+  if(!this.supported) return;
+  this.synth.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'en-US';
+  u.rate = rate !== undefined ? rate : globalAudioSpeed;
+  u.pitch = 1.05;
+  if(this.voiceEN) u.voice = this.voiceEN;
+  if(btn){
+    btn.classList.add('speaking');
+    btn.innerHTML = '<div class="audio-wave"><span></span><span></span><span></span><span></span><span></span></div> Ouvindo...';
+    u.onend = u.onerror = () => { btn.classList.remove('speaking'); btn.innerHTML = '🔊 Ouvir novamente'; };
+  }
+  this.synth.speak(u);
+};
 
 // UTILS
 function isEnglish(text){const e=/\b(the|is|are|am|was|were|I|you|he|she|it|we|they|my|your|his|her|in|on|at|to|a|an|and|or|of|for|with|have|has|how|what|where|when|who|nice|good|morning|meet|name|old|there|sky|grass|dog|cat|coffee|every|hotel|flight|sun|lion|two|plus|equals|hungry|this|that)\b/i;return e.test(text)||/^[a-zA-Z\s\d.,!?'"'-]+$/.test(text.trim());}
