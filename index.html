@@ -31,8 +31,8 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;transition:background-color .2s,border-color .2s,color .2s}
 body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;display:flex;flex-direction:column;align-items:center}
-.screen{display:none;width:100%;max-width:480px;min-height:100vh;flex-direction:column}
-.screen.active{display:flex}
+.screen{display:none;width:100%;max-width:480px;min-height:100vh;flex-direction:column;overflow:hidden;position:relative}
+.screen.active{display:flex;overflow-x:hidden}
 
 /* HOME */
 #home{background:linear-gradient(160deg,#7C3AED 0%,#6D28D9 40%,#4C1D95 100%);align-items:center;justify-content:flex-start;position:relative;overflow-y:auto}
@@ -1011,6 +1011,11 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
   min-height: 100vh;
   padding: 24px;
   gap: 0;
+  position: fixed !important;
+  inset: 0;
+  z-index: 50;
+  max-width: 100%;
+  overflow-y: auto;
 }
 .login-logo-wrap {
   display: flex;
@@ -1160,7 +1165,8 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
 
 /* ── KIDS MODE ── */
 #kidsScreen {
-  background: linear-gradient(160deg, #7C3AED 0%, #4C1D95 100%);
+  background: linear-gradient(160deg, #6D28D9 0%, #4C1D95 100%);
+  min-height: 100vh;
 }
 .kids-header {
   background: linear-gradient(135deg, #F59E0B, #D97706);
@@ -1173,16 +1179,16 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
 .kids-body { padding:16px; display:flex; flex-direction:column; gap:14px; overflow-y:auto; flex:1; }
 .kids-levels { display:flex; flex-direction:column; gap:12px; }
 .kids-level-btn {
-  background: var(--surface); border: 3px solid var(--border);
+  background: rgba(255,255,255,.12); border: 2px solid rgba(255,255,255,.25);
   border-radius: 20px; padding: 18px 16px;
   display: flex; align-items: center; gap: 14px;
-  cursor: pointer; box-shadow: 0 5px 0 var(--border);
+  cursor: pointer; box-shadow: 0 5px 0 rgba(0,0,0,.2);
   transition: all .12s; -webkit-tap-highlight-color: transparent;
 }
 .kids-level-btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--border); }
 .kids-level-icon { font-size: 42px; flex-shrink: 0; }
-.kids-level-name { font-family:'Fredoka One',cursive; font-size:20px; color:var(--text); }
-.kids-level-desc { font-size:12px; font-weight:700; color:var(--gray-600); margin-top:3px; }
+.kids-level-name { font-family:'Fredoka One',cursive; font-size:20px; color:#FFF; }
+.kids-level-desc { font-size:12px; font-weight:700; color:rgba(255,255,255,.7); margin-top:3px; }
 
 /* Kids lesson card */
 .kids-question-card {
@@ -1242,21 +1248,22 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
 /* ── DAILY CHALLENGE ── */
 .daily-challenge-banner {
   background: linear-gradient(135deg,#F59E0B,#D97706);
-  border-radius: 18px; padding: 16px 18px;
-  display: flex; align-items: center; gap: 14px;
+  border-radius: 18px; padding: 14px 16px;
+  display: flex; align-items: center; gap: 10px;
   box-shadow: 0 5px 0 #92400E; cursor: pointer;
   transition: all .12s; -webkit-tap-highlight-color: transparent;
   border: none; width: 100%; text-align: left;
+  overflow: hidden;
 }
 .daily-challenge-banner:active { transform: translateY(4px); box-shadow: 0 1px 0 #92400E; }
 .daily-challenge-banner.done { background: linear-gradient(135deg,#16A34A,#15803D); box-shadow: 0 5px 0 #166534; cursor: default; }
 .daily-challenge-banner.done:active { transform: none; }
-.dc-icon { font-size: 38px; flex-shrink: 0; }
-.dc-info { flex: 1; }
-.dc-title { font-family:'Fredoka One',cursive; font-size: 18px; color: #FFF; }
-.dc-sub { font-size: 12px; color: rgba(255,255,255,.8); font-weight: 700; margin-top: 2px; }
-.dc-timer { font-family:'Fredoka One',cursive; font-size: 16px; color: #FFF; opacity: .85; }
-.dc-xp-badge { background: rgba(255,255,255,.25); border-radius: 20px; padding: 4px 12px; font-size: 13px; font-weight: 800; color: #FFF; }
+.dc-icon { font-size: 32px; flex-shrink: 0; }
+.dc-info { flex: 1; min-width: 0; overflow: hidden; }
+.dc-title { font-family:'Fredoka One',cursive; font-size: 16px; color: #FFF; white-space: nowrap; }
+.dc-sub { font-size: 11px; color: rgba(255,255,255,.8); font-weight: 700; margin-top: 2px; white-space: nowrap; }
+.dc-timer { font-family:'Fredoka One',cursive; font-size: 14px; color: #FFF; opacity: .85; white-space: nowrap; flex-shrink: 0; }
+.dc-xp-badge { background: rgba(255,255,255,.25); border-radius: 20px; padding: 4px 10px; font-size: 12px; font-weight: 800; color: #FFF; white-space: nowrap; flex-shrink: 0; }
 
 /* ── LEADERBOARD ── */
 #leaderboardScreen { background: var(--surface); }
@@ -1449,14 +1456,68 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
 .ai-practice-label { font-size:11px; font-weight:800; color:var(--gray-600); text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
 .ai-practice-text { font-size:14px; font-weight:700; color:var(--text); }
 
+
+/* Login always on top */
+#loginScreen.active {
+  display: flex !important;
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 999 !important;
+  max-width: 100vw !important;
+  width: 100% !important;
+}
+/* Hide note button and other overlays on login */
+#loginScreen.active ~ * .noteFloatingBtn,
+body:has(#loginScreen.active) #noteFloatingBtn {
+  display: none !important;
+}
+
+
+/* Note floating button — hide on login */
+#noteFloatingBtn { transition: opacity .2s; }
+#loginScreen.active + * #noteFloatingBtn,
+#loginScreen ~ * #noteFloatingBtn { display: none; }
+
+
+/* Screen isolation — inactive screens invisible and non-interactive */
+.screen:not(.active) {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+/* Login screen overlay */
+#loginScreen.active {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 9999 !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+}
+/* Kids screen */
+#kidsScreen.active {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  width: 100vw;
+  max-width: 100vw;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+
+#convScreen { flex-direction: column; height: 100vh; overflow: hidden; }
+#convScreen .conv-body { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+
 </style>
 </head>
-<body>
+<body style="overflow:hidden;position:relative">
 <div class="xp-popup" id="xpPopup">+10 XP ⚡</div>
 <div class="tooltip" id="tooltip"></div>
 
 <!-- ══ HOME ══ -->
-<div class="screen active" id="home">
+<div class="screen" id="home">
   <div class="home-content">
     <div class="home-topbar">
       <div style="font-family:'Fredoka One',cursive;font-size:22px;color:#FFF">💬 FalaJá</div>
@@ -1706,7 +1767,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
 <!-- ══ SHARE OVERLAY (injected by JS) ══ -->
 
 <!-- ══ CONVERSATION MODE ══ -->
-<div class="screen" id="convScreen" style="display:none;flex-direction:column;height:100vh">
+<div class="screen" id="convScreen">
   <div class="conv-header" style="flex-shrink:0">
     <button class="close-btn" style="color:#FFF;margin-bottom:5px" onclick="showScreen('home');renderHome()">← Voltar</button>
     <h2>🗣️ Conversa Simulada</h2>
@@ -3509,8 +3570,18 @@ function startQuickSession(){
 
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  const target = document.getElementById(id);
+  if(target) target.classList.add('active');
   TTS.synth.cancel();
+  const isLogin = (id === 'loginScreen');
+  const isKids = (id === 'kidsScreen');
+  // Body scroll
+  document.body.style.overflow = (isLogin) ? 'hidden' : '';
+  // Floating elements
+  ['noteFloatingBtn','pwaBanner'].forEach(f => {
+    const el = document.getElementById(f);
+    if(el) el.style.display = (isLogin || isKids) ? 'none' : '';
+  });
 }
 
 function renderQuestion(){
@@ -3813,17 +3884,7 @@ function shadowInLessonManual(){
     </div>`;
 }
 
-function shadowInLessonRate(ok){
-  const fb=document.getElementById('shadowFeedback');
-  document.getElementById('ss3').className='shadow-step done';
-  fb.style.cssText='';
-  fb.className=`shadow-feedback show ${ok?'ok':'bad'}`;
-  fb.innerHTML=ok?'✅ Ótimo! Sua pronúncia está melhorando!':'❌ Ouça mais uma vez e tente. Você consegue!';
-  SFX[ok?'correct':'click']();
-  if(ok){state.correct++;showXPPopup('+10 XP ⚡');}
-  document.getElementById('checkBtn').disabled=false;
-  document.getElementById('checkBtn').textContent='CONTINUAR';
-}
+// shadowInLessonRate (removed duplicate)
 
 function processShadow(stream){
   const btn=document.getElementById('shadowMicBtn');
@@ -4823,7 +4884,7 @@ function getLevel(xp) {
   return LEVELS.find(l => xp >= l.min && xp <= l.max) || LEVELS[LEVELS.length-1];
 }
 
-function getLevelProgress(xp) {
+function getLevelXpProgress(xp) {
   const lv = getLevel(xp);
   const range = lv.max - lv.min;
   const prog = xp - lv.min;
@@ -4917,7 +4978,7 @@ function renderStats() {
   const body = document.getElementById('statsBody');
   const ld = state.lessonData;
   const lv = getLevel(state.xp);
-  const lvPct = getLevelProgress(state.xp);
+  const lvPct = getLevelXpProgress(state.xp);
   const days7 = StatsTracker.last7Days();
   const maxXP = Math.max(...days7.map(d=>d.xp), 1);
   const totalStudied = StatsTracker.totalDaysStudied();
@@ -5691,7 +5752,7 @@ function openShare() {
   // Remove any existing overlay first
   document.getElementById("shareOverlay")?.remove();
   const lv = getLevel(state.xp);
-  const lvPct = getLevelProgress(state.xp);
+  const lvPct = getLevelXpProgress(state.xp);
   const earned = Badges.earned();
   const earnedBadges = BADGE_DEFS.filter(b=>earned[b.id]).slice(0,6);
   const completed = state.lessonData.completed?.length||0;
@@ -5918,16 +5979,7 @@ function dictNav(dir) {
 // ═══════════════════════════════════════════════
 let globalAudioSpeed = 0.85;
 
-function renderSpeedControl(onChangeFn) {
-  return `<div class="audio-speed-wrap">
-    <div class="audio-speed-label">Vel:</div>
-    ${[0.5,0.75,1.0,1.25].map(s=>`
-      <button class="spd-btn${globalAudioSpeed===s?' active':''}"
-        onclick="${onChangeFn}(${s})">
-        ${s}x
-      </button>`).join('')}
-  </div>`;
-}
+// renderSpeedControl removed (unused)
 
 function setGlobalSpeed(s) {
   globalAudioSpeed = s;
@@ -6885,6 +6937,7 @@ function doCreateAccount() {
 
 function enterApp() {
   const cur = Auth.getCurrentUser();
+  updateUserAvatar();
   // Load user-specific data if exists
   const userData = Auth.loadUserData();
   if(userData) {
@@ -6930,11 +6983,11 @@ function openUserMenu() {
   const overlay = document.createElement('div');
   overlay.className = 'user-menu-overlay';
   overlay.id = 'userMenuOverlay';
-  overlay.onclick = () => { overlay.remove(); menu.remove(); };
 
   const menu = document.createElement('div');
   menu.className = 'user-menu';
   menu.id = 'userMenuEl';
+  overlay.onclick = () => { document.getElementById('userMenuOverlay')?.remove(); document.getElementById('userMenuEl')?.remove(); };
   menu.innerHTML = `
     <div class="user-menu-name">${cur ? '👤 ' + cur.name : 'Visitante'}</div>
     <div class="user-menu-item" onclick="openProfile();document.getElementById('userMenuOverlay')?.remove();document.getElementById('userMenuEl')?.remove()">
@@ -7083,7 +7136,7 @@ function renderKidsQuestion() {
         </button>`).join('')}
     </div>
 
-    <div id="kidsFeedback" style="display:none;text-align:center;font-family:'Fredoka One',cursive;font-size:20px;padding:10px"></div>
+    <div id="kidsFeedback" style="display:none;text-align:center"></div>
     `;
 
   // Speak the word
@@ -7587,14 +7640,16 @@ function renderDailyBanner() {
   if(!el) return;
   const done = DailyChallenge.isDone();
   el.innerHTML = `
-    <button class="daily-challenge-banner ${done?'done':''}" onclick="${done?'':"openDailyChallenge()"}">
-      <div class="dc-icon">${done?'✅':'⚡'}</div>
-      <div class="dc-info">
-        <div class="dc-title">${done?'Desafio do Dia Concluído!':'⚡ Desafio Diário'}</div>
-        <div class="dc-sub">${done?`+${DailyChallenge.load().xp||50} XP ganhos hoje!`:'Questão especial · XP em dobro!'}</div>
+    <button class="daily-challenge-banner ${done?'done':''}" onclick="${done?'':"openDailyChallenge()"}" style="flex-wrap:nowrap;align-items:center">
+      <div class="dc-icon" style="flex-shrink:0">${done?'✅':'⚡'}</div>
+      <div class="dc-info" style="flex:1;min-width:0;overflow:hidden">
+        <div class="dc-title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${done?'Concluído! ✅':'⚡ Desafio Diário'}</div>
+        <div class="dc-sub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${done?'XP ganhos hoje!':'Questão especial · 2x XP'}</div>
       </div>
-      ${done?'':'<div class="dc-xp-badge">+50 XP x2</div>'}
-      <div class="dc-timer">${done?'🔥':'⏰ '+DailyChallenge.timeUntilMidnight()}</div>
+      <div style="display:flex;align-items:center;gap:6px;flex-shrink:0">
+        ${done?'':"<div class='dc-xp-badge'>+50 🔥</div>"}
+        <div class="dc-timer">${done?'🎯':'⏰ '+DailyChallenge.timeUntilMidnight()}</div>
+      </div>
     </button>`;
 }
 
@@ -7677,7 +7732,7 @@ function renderProfile() {
   const avatar = UserPrefs.getAvatar();
   const theme = UserPrefs.getTheme();
   const lv = getLevel(state.xp);
-  const lvPct = getLevelProgress(state.xp);
+  const lvPct = getLevelXpProgress(state.xp);
   const completed = state.lessonData.completed?.length || 0;
 
   // Update header
