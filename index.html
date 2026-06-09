@@ -1510,6 +1510,248 @@ body:has(#loginScreen.active) #noteFloatingBtn {
 #convScreen { flex-direction: column; height: 100vh; overflow: hidden; }
 #convScreen .conv-body { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
 
+
+/* ═══════════════════════════════════════════
+   DESKTOP RESPONSIVE — FalaJá
+   ═══════════════════════════════════════════ */
+
+@media (min-width: 768px) {
+
+  body {
+    background: linear-gradient(135deg, #1a0533 0%, #120321 100%) !important;
+    overflow: auto !important;
+  }
+
+  /* All screens max-width centered */
+  .screen {
+    max-width: 1120px !important;
+    margin: 0 auto !important;
+    box-shadow: 0 0 60px rgba(124,58,237,.25) !important;
+    border-radius: 0 !important;
+    min-height: 100vh;
+  }
+
+  /* ── LOGIN ── */
+  #loginScreen {
+    position: relative !important;
+    inset: unset !important;
+    max-width: 460px !important;
+    min-height: auto !important;
+    margin: 48px auto !important;
+    border-radius: 28px !important;
+    padding: 48px 40px !important;
+    box-shadow: 0 40px 100px rgba(0,0,0,.5) !important;
+  }
+  #loginScreen .login-logo-icon { width: 110px; height: 110px; font-size: 64px; }
+  #loginScreen .login-logo-name { font-size: 48px; }
+
+  /* ── HOME — sidebar + main ── */
+  #home {
+    display: grid !important;
+    grid-template-columns: 300px 1fr !important;
+    grid-template-rows: auto 1fr !important;
+    min-height: 100vh;
+    align-items: start;
+  }
+
+  /* Topbar spans full width */
+  .home-topbar {
+    grid-column: 1 / -1 !important;
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    background: rgba(76,29,149,.97) !important;
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(255,255,255,.1);
+    padding: 0 24px !important;
+    height: 60px;
+    display: flex;
+    align-items: center;
+  }
+
+  /* Sidebar */
+  .home-sidebar {
+    grid-column: 1 !important;
+    grid-row: 2 !important;
+    position: sticky !important;
+    top: 60px !important;
+    height: calc(100vh - 60px) !important;
+    overflow-y: auto !important;
+    overflow-x: hidden;
+    padding: 20px 18px !important;
+    background: linear-gradient(180deg,rgba(76,29,149,.15) 0%,rgba(30,10,60,.2) 100%);
+    border-right: 1px solid rgba(255,255,255,.07);
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 14px !important;
+  }
+
+  /* Remove daily banner from sidebar — move to main */
+  #dailyChallengeBanner { order: -1; }
+
+  /* Hero in sidebar — compact */
+  .home-sidebar > div:not(.quick-cards):not(.skill-card):not(.stats-row):not(#dailyChallengeBanner):not(.section-title) {
+    /* targeting the logo area */
+  }
+
+  /* Quick cards — 1 column vertical list in sidebar */
+  .quick-cards {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
+  }
+
+  .quick-card {
+    border-radius: 12px !important;
+    padding: 10px 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    min-height: 48px !important;
+  }
+
+  .quick-card-icon { font-size: 20px !important; flex-shrink: 0; }
+  .quick-card-body h3 { font-size: 13px !important; }
+  .quick-card-body p { font-size: 11px !important; }
+
+  /* Sidebar stat pills — horizontal row */
+  .stats-row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    width: 100% !important;
+  }
+
+  .stat-pill {
+    flex: 1 !important;
+    min-width: 70px !important;
+    justify-content: center !important;
+    font-size: 13px !important;
+    padding: 8px 10px !important;
+  }
+
+  /* Skill card in sidebar */
+  .skill-card { border-radius: 14px !important; }
+
+  /* Main content area — lessons */
+  .lessons-area {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    padding: 24px !important;
+    overflow-y: auto !important;
+    max-height: calc(100vh - 60px) !important;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  /* Daily challenge in main area */
+  .lessons-area #dailyChallengeBanner,
+  .lessons-area > [id="dailyChallengeBanner"] {
+    width: 100%;
+  }
+
+  /* Lessons grid — 4 per row on desktop */
+  .level-lessons-grid {
+    grid-template-columns: repeat(4, 1fr) !important;
+    max-height: none !important;
+  }
+
+  /* Lesson card on desktop */
+  .lesson-card { border-radius: 16px !important; padding: 16px 12px !important; }
+  .lesson-card-icon { font-size: 36px !important; }
+  .lesson-card-name { font-size: 12px !important; }
+
+  /* Section title */
+  .section-title { font-size: 18px !important; font-weight: 800; color: var(--text); padding: 4px 0 8px !important; }
+
+  /* ── INNER SCREENS ── */
+  #lesson, #bossScreen, #examScreen, #review, #dictationScreen,
+  #shadowing, #pronunciation, #errorReviewScreen {
+    max-width: 720px !important;
+    margin: 0 auto !important;
+  }
+
+  #statsScreen, #badgesScreen, #historyScreen, #profileScreen,
+  #certScreen, #aiReviewScreen, #leaderboardScreen, #weeklyScreen {
+    max-width: 860px !important;
+    margin: 0 auto !important;
+  }
+
+  #storiesScreen, #convScreen { max-width: 1000px !important; margin: 0 auto !important; }
+  #kidsScreen { max-width: 700px !important; margin: 0 auto !important; }
+
+  /* Stories — 3 column grid */
+  .stories-body {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 16px !important;
+    align-content: start !important;
+  }
+  .story-card { height: 100%; }
+
+  /* Badges — 5 column */
+  .badges-grid { grid-template-columns: repeat(5, 1fr) !important; }
+
+  /* Profile body — 2 column */
+  .profile-body {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 14px !important;
+    align-content: start;
+  }
+
+  /* Kids — 2 column categories, 4 options */
+  .kids-levels {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 12px !important;
+  }
+  .kids-options { grid-template-columns: repeat(4, 1fr) !important; }
+  .kids-emoji { font-size: 80px !important; }
+
+  /* Conversation screen */
+  .conv-topic-grid { grid-template-columns: repeat(4, 1fr) !important; }
+
+  /* Exam — wider question area */
+  .exam-body, .boss-body { max-width: 600px; margin: 0 auto; }
+
+  /* Options list — 2 column on desktop */
+  .options-list {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 10px !important;
+  }
+
+  /* Shadowing */
+  #shadowing .review-body { max-width: 600px; margin: 0 auto; padding: 24px !important; }
+
+  /* Stats — 4 tile grid */
+  .stats-grid { grid-template-columns: repeat(4, 1fr) !important; }
+
+  /* Leaderboard entries */
+  .lb-body { max-width: 600px; margin: 0 auto; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: rgba(124,58,237,.35); border-radius: 20px; }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(124,58,237,.6); }
+
+  /* User menu — positioned correctly on desktop */
+  .user-menu { right: 24px !important; }
+}
+
+/* ── Wide 1280px+ ── */
+@media (min-width: 1280px) {
+  .screen { max-width: 1260px !important; }
+  #home { grid-template-columns: 320px 1fr !important; }
+  .level-lessons-grid { grid-template-columns: repeat(5, 1fr) !important; }
+  .badges-grid { grid-template-columns: repeat(7, 1fr) !important; }
+  .stories-body { grid-template-columns: repeat(3, 1fr) !important; }
+  .options-list { grid-template-columns: 1fr 1fr !important; }
+}
+
 </style>
 </head>
 <body style="overflow:hidden;position:relative">
@@ -1518,7 +1760,7 @@ body:has(#loginScreen.active) #noteFloatingBtn {
 
 <!-- ══ HOME ══ -->
 <div class="screen" id="home">
-  <div class="home-content">
+  <div class="home-content home-sidebar">
     <div class="home-topbar">
       <div style="font-family:'Fredoka One',cursive;font-size:22px;color:#FFF">💬 FalaJá</div>
       <button class="user-avatar-btn" id="userAvatarBtn" onclick="openUserMenu()">👤</button>
@@ -1613,9 +1855,12 @@ body:has(#loginScreen.active) #noteFloatingBtn {
         <div class="quick-card-badge" id="homeBadgeCount" style="display:none">0</div>
       </div>
     </div>
+  </div><!-- end sidebar -->
+  <div class="lessons-area">
     <div class="section-title">📚 Lições do FalaJá:</div>
       <div id="lessonsContainer" style="display:flex;flex-direction:column;gap:10px;padding-bottom:24px"></div>
   </div>
+  </div><!-- end lessons-area -->
   <div class="pwa-banner" id="pwaBanner" style="display:none">
     <div style="display:flex;align-items:center;gap:8px;flex:1">
       <span style="font-size:20px">💬</span>
@@ -8056,6 +8301,38 @@ function showXPPopup(text) {
     }, i * 150);
   }
 }
+
+
+// Move daily banner to lessons area on desktop
+function moveDailyBannerForDesktop() {
+  const isDesktop = window.innerWidth >= 768;
+  const banner = document.getElementById('dailyChallengeBanner');
+  const sidebar = document.querySelector('.home-sidebar');
+  const main = document.querySelector('.lessons-area');
+  if(!banner || !sidebar || !main) return;
+  if(isDesktop) {
+    // Move to top of lessons area
+    if(banner.parentNode !== main) {
+      main.insertBefore(banner, main.firstChild);
+    }
+  } else {
+    // Move back to sidebar
+    if(banner.parentNode !== sidebar) {
+      // Insert after topbar area (before stats-row)
+      const statsRow = sidebar.querySelector('.stats-row');
+      if(statsRow) sidebar.insertBefore(banner, statsRow);
+      else sidebar.appendChild(banner);
+    }
+  }
+}
+
+window.addEventListener('resize', moveDailyBannerForDesktop);
+// Call after renderHome
+const _origRenderHome = renderHome;
+renderHome = function() {
+  _origRenderHome();
+  setTimeout(moveDailyBannerForDesktop, 100);
+};
 
 // UTILS
 function isEnglish(text){const e=/\b(the|is|are|am|was|were|I|you|he|she|it|we|they|my|your|his|her|in|on|at|to|a|an|and|or|of|for|with|have|has|how|what|where|when|who|nice|good|morning|meet|name|old|there|sky|grass|dog|cat|coffee|every|hotel|flight|sun|lion|two|plus|equals|hungry|this|that)\b/i;return e.test(text)||/^[a-zA-Z\s\d.,!?'"'-]+$/.test(text.trim());}
