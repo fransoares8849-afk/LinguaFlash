@@ -1468,9 +1468,7 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
 }
 /* Hide note button and other overlays on login */
 #loginScreen.active ~ * .noteFloatingBtn,
-body:has(#loginScreen.active) #noteFloatingBtn {
-  display: none !important;
-}
+/* note btn hidden via JS */
 
 
 /* Note floating button — hide on login */
@@ -1482,7 +1480,6 @@ body:has(#loginScreen.active) #noteFloatingBtn {
 /* Screen isolation — inactive screens invisible and non-interactive */
 .screen:not(.active) {
   display: none !important;
-  visibility: hidden !important;
   pointer-events: none !important;
 }
 /* Login screen overlay */
@@ -1548,10 +1545,11 @@ body:has(#loginScreen.active) #noteFloatingBtn {
   /* ── HOME — sidebar + main ── */
   #home {
     display: grid !important;
-    grid-template-columns: 300px 1fr !important;
-    grid-template-rows: auto 1fr !important;
+    grid-template-columns: 280px 1fr !important;
+    grid-template-rows: 60px 1fr !important;
     min-height: 100vh;
-    align-items: start;
+    height: 100vh;
+    overflow: hidden;
   }
 
   /* Topbar spans full width */
@@ -1754,7 +1752,7 @@ body:has(#loginScreen.active) #noteFloatingBtn {
 
 </style>
 </head>
-<body style="overflow:hidden;position:relative">
+<body style="overflow:hidden;position:relative"><div id="appLoader" style="position:fixed;inset:0;background:linear-gradient(135deg,#7C3AED,#4C1D95);display:flex;align-items:center;justify-content:center;z-index:9999;font-family:'Fredoka One',cursive;font-size:32px;color:#FFF">💬 FalaJá</div>
 <div class="xp-popup" id="xpPopup">+10 XP ⚡</div>
 <div class="tooltip" id="tooltip"></div>
 
@@ -4333,13 +4331,7 @@ function finishLesson(){
   showScreen('result');SFX.finish();if(acc>=80)launchConfetti();
 }
 
-function goHome(){showScreen('home');// Check if user is logged in
-if(Auth.getCurrentUser()) {
-  showScreen('home');
-  renderHome();
-} else {
-  showScreen('loginScreen');
-}}
+function goHome(){showScreen('home');renderHome();}
 function closeLesson(){goHome();}
 
 // SRS REVIEW
@@ -8346,7 +8338,20 @@ if('serviceWorker' in navigator && navigator.serviceWorker && location.protocol=
   navigator.serviceWorker.register('./sw.js').catch(()=>{});
 }
 
-renderHome();
+// App initialization
+const _appLoader = document.getElementById('appLoader');
+if(_appLoader) {
+  _appLoader.style.transition = 'opacity .3s';
+  _appLoader.style.opacity = '0';
+  setTimeout(() => _appLoader.remove(), 300);
+}
+
+if(Auth.getCurrentUser()) {
+  showScreen('home');
+  renderHome();
+} else {
+  showScreen('loginScreen');
+}
 
 </script>
 </body>
