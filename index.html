@@ -31,8 +31,8 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;transition:background-color .2s,border-color .2s,color .2s}
 body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;display:flex;flex-direction:column;align-items:center}
-.screen{display:none;width:100%;max-width:480px;min-height:100vh;flex-direction:column;overflow:hidden;position:relative}
-.screen.active{display:flex;overflow-x:hidden}
+.screen{display:none;width:100%;max-width:480px;min-height:100vh;flex-direction:column;overflow:hidden}
+.screen.active{display:flex;flex-direction:column;overflow-x:hidden}
 
 /* HOME */
 #home{background:linear-gradient(160deg,#7C3AED 0%,#6D28D9 40%,#4C1D95 100%);align-items:center;justify-content:flex-start;position:relative;overflow-y:auto}
@@ -1474,200 +1474,199 @@ body{font-family:'Nunito',sans-serif;background:var(--bg);min-height:100vh;displ
    ══════════════════════════════════ */
 
 /* Tablet 768px+ */
+/* ── APP CONTAINER ── */
+#app {
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Mobile: screens stack but only active shows */
+.screen {
+  display: none !important;
+}
+.screen.active {
+  display: flex !important;
+  flex-direction: column;
+}
+
+/* ══ DESKTOP ══ */
 @media (min-width: 768px) {
 
   body {
-    background: linear-gradient(135deg,#1a0533,#120321) !important;
+    background: #0f0820 !important;
     overflow: auto !important;
-  }
-
-  /* Center all screens */
-  .screen {
-    max-width: 900px !important;
-    margin: 0 auto !important;
-    box-shadow: 0 0 80px rgba(124,58,237,.3) !important;
     min-height: 100vh;
   }
 
-  /* Login — floating card */
-  #loginScreen {
-    position: relative !important;
-    inset: unset !important;
-    max-width: 460px !important;
-    min-height: unset !important;
-    margin: 40px auto !important;
-    border-radius: 28px !important;
-    box-shadow: 0 40px 100px rgba(0,0,0,.6) !important;
-    overflow: hidden !important;
+  /* Center the app */
+  #app {
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 100vh;
+    box-shadow: 0 0 60px rgba(124,58,237,.4);
+    background: var(--bg, #F8F7FF);
+    position: relative;
   }
 
-  /* Home — sidebar + main */
-  #home {
+  [data-theme="dark"] #app { background: #0F0A1E; }
+
+  /* All screens fill the app container */
+  .screen {
+    display: none !important;
+    position: absolute !important;
+    inset: 0 !important;
+    min-height: 100vh !important;
+    max-width: 100% !important;
+    overflow-y: auto !important;
+  }
+
+  .screen.active {
+    display: flex !important;
+    flex-direction: column !important;
+    position: relative !important;
+    min-height: 100vh !important;
+  }
+
+  /* Login screen — narrow card */
+  #loginScreen.active {
+    background: linear-gradient(160deg,#7C3AED,#2E1065) !important;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+
+  .login-card {
+    max-width: 440px;
+    width: 100%;
+  }
+
+  /* Home — sidebar + main grid */
+  #home.active {
     display: grid !important;
     grid-template-columns: 280px 1fr !important;
     grid-template-rows: 60px 1fr !important;
     height: 100vh !important;
-    max-width: 1100px !important;
-    overflow: hidden;
+    overflow: hidden !important;
   }
 
-  /* Topbar wrapper spans full width */
   .home-topbar-wrapper {
     grid-column: 1 / -1 !important;
     grid-row: 1 !important;
-    height: 60px;
   }
 
   .home-topbar-wrapper .home-topbar {
-    position: sticky !important;
-    top: 0 !important;
-    z-index: 20 !important;
-    background: rgba(76,29,149,.97) !important;
-    backdrop-filter: blur(12px) !important;
     height: 60px !important;
     display: flex !important;
     align-items: center !important;
-    padding: 0 20px !important;
+    padding: 0 24px !important;
+    background: rgba(76,29,149,.97) !important;
+    backdrop-filter: blur(12px) !important;
     border-bottom: 1px solid rgba(255,255,255,.1) !important;
   }
 
-  /* Sidebar */
   .home-sidebar {
     grid-column: 1 !important;
     grid-row: 2 !important;
     height: calc(100vh - 60px) !important;
     overflow-y: auto !important;
     padding: 16px 14px !important;
-    background: rgba(0,0,0,.15) !important;
-    border-right: 1px solid rgba(255,255,255,.08) !important;
+    background: rgba(0,0,0,.12) !important;
+    border-right: 1px solid rgba(255,255,255,.07) !important;
     display: flex !important;
     flex-direction: column !important;
-    gap: 12px !important;
+    gap: 10px !important;
   }
 
-  /* Main content */
   .lessons-area {
     grid-column: 2 !important;
     grid-row: 2 !important;
     height: calc(100vh - 60px) !important;
     overflow-y: auto !important;
-    padding: 20px !important;
+    padding: 20px 24px !important;
     display: flex;
     flex-direction: column;
     gap: 14px;
   }
 
-  /* Sidebar quick cards — compact list */
+  /* Sidebar quick cards — compact */
   .quick-cards {
     display: flex !important;
     flex-direction: column !important;
     gap: 5px !important;
   }
-
   .quick-card {
     border-radius: 10px !important;
-    padding: 9px 12px !important;
+    padding: 8px 12px !important;
     display: flex !important;
     align-items: center !important;
     gap: 9px !important;
-    min-height: 0 !important;
+    box-shadow: none !important;
   }
-
-  .quick-card-icon { font-size: 18px !important; }
+  .quick-card:active { transform: none !important; }
+  .quick-card-icon { font-size: 17px !important; }
   .quick-card-body h3 { font-size: 12px !important; margin: 0 !important; }
   .quick-card-body p { font-size: 10px !important; margin: 0 !important; }
 
-  /* Stats row compact */
-  .stats-row {
-    display: flex !important;
-    gap: 6px !important;
-    flex-wrap: wrap !important;
-  }
+  /* Stats pills */
+  .stats-row { display: flex !important; gap: 5px !important; flex-wrap: wrap !important; }
+  .stat-pill { flex: 1 !important; min-width: 55px !important; font-size: 11px !important; padding: 6px 7px !important; justify-content: center !important; }
 
-  .stat-pill {
-    flex: 1 !important;
-    min-width: 60px !important;
-    font-size: 12px !important;
-    padding: 7px 8px !important;
-    justify-content: center !important;
-  }
-
-  /* Lessons — 4 columns */
-  .level-lessons-grid {
-    grid-template-columns: repeat(4,1fr) !important;
-    max-height: none !important;
-  }
+  /* Lessons grid — 4 columns */
+  .level-lessons-grid { grid-template-columns: repeat(4,1fr) !important; max-height: none !important; }
 
   /* Options — 2 columns */
-  .options-list {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 10px !important;
+  .options-list { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 10px !important; }
+
+  /* Other screens — centered narrow */
+  #lesson.active, #bossScreen.active, #examScreen.active, #review.active,
+  #dictationScreen.active, #shadowing.active, #pronunciation.active,
+  #errorReviewScreen.active, #notesScreen.active {
+    max-width: 720px !important;
+    margin: 0 auto !important;
+    position: relative !important;
+    min-height: 100vh;
   }
 
-  /* Stats grid — 4 tiles */
-  .stats-grid { grid-template-columns: repeat(4,1fr) !important; }
-
-  /* Stories — 2 columns */
-  .stories-body {
-    display: grid !important;
-    grid-template-columns: repeat(2,1fr) !important;
-    gap: 14px !important;
+  #statsScreen.active, #badgesScreen.active, #historyScreen.active,
+  #profileScreen.active, #certScreen.active, #aiReviewScreen.active,
+  #leaderboardScreen.active, #weeklyScreen.active, #convScreen.active,
+  #storiesScreen.active, #kidsScreen.active {
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    position: relative !important;
+    min-height: 100vh;
   }
 
-  /* Badges — 5 columns */
+  /* Stories grid */
+  .stories-body { display: grid !important; grid-template-columns: repeat(2,1fr) !important; gap: 14px !important; }
+
+  /* Badges */
   .badges-grid { grid-template-columns: repeat(5,1fr) !important; }
 
-  /* Kids — 2 columns */
-  .kids-levels {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 12px !important;
-  }
+  /* Stats tiles */
+  .stats-grid { grid-template-columns: repeat(4,1fr) !important; }
+
+  /* Kids */
+  .kids-levels { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 12px !important; }
   .kids-options { grid-template-columns: repeat(4,1fr) !important; }
-
-  /* Conv topics — 4 columns */
-  .conv-topic-grid { grid-template-columns: repeat(4,1fr) !important; }
-
-  /* Lesson/exam screens — centered narrow */
-  #lesson, #bossScreen, #examScreen, #review,
-  #dictationScreen, #shadowing, #pronunciation {
-    max-width: 700px !important;
-    margin: 0 auto !important;
-  }
-
-  /* Profile — 2 column body */
-  .profile-body {
-    display: grid !important;
-    grid-template-columns: 1fr 1fr !important;
-    gap: 14px !important;
-  }
 
   /* Scrollbar */
   ::-webkit-scrollbar { width: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: rgba(124,58,237,.4); border-radius: 10px; }
-
 }
 
-/* Wide 1280px+ */
 @media (min-width: 1280px) {
-  #home { grid-template-columns: 300px 1fr !important; max-width: 1300px !important; }
+  #app { max-width: 1400px; }
+  #home.active { grid-template-columns: 300px 1fr !important; }
   .level-lessons-grid { grid-template-columns: repeat(5,1fr) !important; }
   .stories-body { grid-template-columns: repeat(3,1fr) !important; }
-  .badges-grid { grid-template-columns: repeat(7,1fr) !important; }
 }
-
-/* Mobile: topbar wrapper behaves normally */
-.home-topbar-wrapper { display: contents; }
-.home-topbar-wrapper .home-topbar { position: sticky; top: 0; z-index: 10; }
-@media (min-width: 768px) {
-  .home-topbar-wrapper { display: block !important; }
-}
-
 </style>
 </head>
-<body style="overflow:hidden;position:relative"><div id="appLoader" style="position:fixed;inset:0;background:linear-gradient(135deg,#7C3AED,#4C1D95);display:flex;align-items:center;justify-content:center;z-index:9999;font-family:'Fredoka One',cursive;font-size:32px;color:#FFF">💬 FalaJá</div>
+<body style="overflow:hidden;position:relative"><div id="appLoader" style="position:fixed;inset:0;background:linear-gradient(135deg,#7C3AED,#4C1D95);display:flex;align-items:center;justify-content:center;z-index:9999;font-family:'Fredoka One',cursive;font-size:32px;color:#FFF">
+<div id="app">💬 FalaJá</div>
 <div class="xp-popup" id="xpPopup">+10 XP ⚡</div>
 <div class="tooltip" id="tooltip"></div>
 
@@ -8269,5 +8268,6 @@ if(Auth.getCurrentUser()) {
 }
 
 </script>
+</div>
 </body>
 </html>
